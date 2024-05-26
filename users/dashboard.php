@@ -7,6 +7,9 @@
 </head>
 
 <body>
+    <div>
+        <?php include("users/components/navbar.php") ?>
+    </div>
     <div></div>
 </body>
 
