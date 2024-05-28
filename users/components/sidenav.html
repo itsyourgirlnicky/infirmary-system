@@ -1,4 +1,10 @@
-<div
+<head>
+  <link rel="stylesheet" href="./components.css">
+</head>
+
+<body>
+  
+  <div
   style="
     display: flex;
     flex-direction: column;
@@ -12,27 +18,27 @@
     background-color: #465672;
   "
 >
-  <a href="" style="text-decoration: none">
-    <div
-      style="
-        display: flex;
-        flex-direction: row;
-        border-bottom: 1px solid white;
-        width: 100%;
-        gap: 1rem;
-        color: white;
-        padding: 3rem;
-        font-size: 20px;
-      "
+  <li style="list-style-type: none">
+    <a
+      href="javascript: void(0);"
+      class="dropdown-toggle"
+      style="text-decoration: none"
     >
-      Patients
-      <img
-        style="height: 20px; width: 30px; color: white"
-        src="../../images/chevron-down-solid.svg"
-        alt="dropdown"
-      />
-    </div>
-  </a>
+      <div class="dropdown-menu-container">
+        <span>Patients</span>
+        <img
+          src="../../images/chevron-down-solid.svg"
+          alt="dropdown"
+          class="dropdown-icon"
+        />
+      </div>
+    </a>
+    <ul class="nav-second-level dropdown-menu" aria-expanded="false">
+      <li><a href="">Add Patients</a></li>
+      <li><a href="">Manage Patients</a></li>
+    </ul>
+  </li>
+
   <a href="" style="text-decoration: none">
     <div
       style="
@@ -131,15 +137,15 @@
         list-style-type: none;
       "
     >
-    <li>
+      <li>
         Inventory
-      <img
-        style="height: 20px; width: 30px; color: white"
-        src="../../images/chevron-down-solid.svg"
-        alt="dropdown"
-      />
-    </li>
-  </ul>
+        <img
+          style="height: 20px; width: 30px; color: white"
+          src="../../images/chevron-down-solid.svg"
+          alt="dropdown"
+        />
+      </li>
+    </ul>
   </a>
   <a href="" style="text-decoration: none">
     <div
@@ -163,3 +169,7 @@
     </div>
   </a>
 </div>
+
+<script src="../js/sidenav.js"></script>
+</body>
+

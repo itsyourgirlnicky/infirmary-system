@@ -8,9 +8,11 @@
 
 <body>
     <div>
-        <?php include("users/components/navbar.php") ?>
+        <?php include ("users/components/navbar.php") ?>
     </div>
-    <div></div>
+    <div style="position: fixed;">
+        <?php include ("users/components/sidenav.php") ?>
+    </div>
 </body>
 
 </html>
