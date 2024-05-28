@@ -1,3 +1,9 @@
+<?php
+session_start();
+
+?>
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,12 +12,18 @@
     <title>Document</title>
 </head>
 
-<body>
-    <div>
-        <?php include ("users/components/navbar.php") ?>
+<body style="width: 100%;">
+    <div style="display: flex; flex-direction: row;">
+        <div style="width: 17%;">
+            <?php include "components/sidenav.php"; ?>
+        </div>
+        <div style="width: 83%;">
+            <?php include "components/navbar.php" ?>
+
+        </div>
     </div>
+
     <div style="position: fixed;">
-        <?php include ("users/components/sidenav.php") ?>
     </div>
 </body>
 
