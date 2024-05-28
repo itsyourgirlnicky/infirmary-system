@@ -101,6 +101,7 @@
       Pharmacy
       <img src="../../images/chevron-down-solid.svg" alt="dropdown"/>
     </div>
+<<<<<<< HEAD:users/components/sidenav.php
     <div class="dropdown-menu">
       <a href="#">Sub-item 1</a>
       <a href="#">Sub-item 2</a>
@@ -116,9 +117,50 @@
     </div>
 
     <div class="menu-item dropdown-toggle">
+=======
+  </a>
+  <a href="" style="text-decoration: none">
+    <ul
+      style="
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        border-bottom: 1px solid white;
+        width: 100%;
+        color: white;
+        padding: 3rem;
+        font-size: 20px;
+        list-style-type: none;
+      "
+    >
+      <li>
+        Inventory
+        <img
+          style="height: 20px; width: 30px; color: white"
+          src="../../images/chevron-down-solid.svg"
+          alt="dropdown"
+        />
+      </li>
+    </ul>
+  </a>
+  <a href="" style="text-decoration: none">
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        border-bottom: 1px solid white;
+        width: 100%;
+        color: white;
+        padding: 3rem;
+        font-size: 20px;
+      "
+    >
+>>>>>>> 2879621b60a481a14f6a7ecb124efac304833a82:users/components/sidenav.html
       Billing
       <img src="../../images/chevron-down-solid.svg" alt="dropdown"/>
     </div>
+<<<<<<< HEAD:users/components/sidenav.php
     <div class="dropdown-menu">
       <a href="#">Sub-item 1</a>
       <a href="#">Sub-item 2</a>
@@ -139,4 +181,11 @@
   </script>
 </body>
 </html>
+=======
+  </a>
+</div>
+
+<script src="../js/sidenav.js"></script>
+</body>
+>>>>>>> 2879621b60a481a14f6a7ecb124efac304833a82:users/components/sidenav.html
 

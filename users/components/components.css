@@ -1,0 +1,41 @@
+.dropdown-menu-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px solid white;
+    width: 100%;
+    gap: 1rem;
+    color: white;
+    padding: 3rem;
+    font-size: 20px;
+    cursor: pointer; /* Indicate clickable area */
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Position below the dropdown toggle */
+    left: 0; /* Align to the left of the toggle */
+    background-color: white; /* Adjust background color as needed */
+    list-style: none;
+    padding: 0;
+    display: none; /* Initially hidden */
+  }
+  
+  .dropdown-menu li {
+    padding: 1rem;
+  }
+  
+  .dropdown-toggle.active .dropdown-menu {
+    display: block; /* Show dropdown on active state */
+  }
+  
+  .dropdown-icon {
+    height: 20px;
+    width: 30px;
+    transition: transform 0.2s ease-in-out; /* Smoother rotation animation */
+  }
+  
+  .dropdown-toggle.active .dropdown-icon {
+    transform: rotate(180deg); /* Rotate icon on active state */
+  }
+  
