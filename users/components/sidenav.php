@@ -66,7 +66,7 @@
       <i class="fas fa-chevron-down"></i>
     </div>
     <div class="dropdown-menu">
-      <a href="#">Sub-item 1</a>
+      <a href="add_patient.php">Add Patient Details</a>
       <a href="#">Sub-item 2</a>
     </div>
 

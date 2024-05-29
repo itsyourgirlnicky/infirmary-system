@@ -18,17 +18,19 @@ if (isset($_POST['user_register'])) {
     } elseif ($password !== $confirm_password) {
         $err = "Passwords do not match.";
     } else {
+
         // Hash the password
         $hashed_password = sha1(md5($password));
 
         // Check if the username or email already exists
-        $stmt = $mysqli->prepare("SELECT user_id FROM users WHERE username=? OR email=?");
+        $stmt = $mysqli->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
         $stmt->bind_param('ss', $username, $email);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows > 0) {
             $err = "Username or email already exists.";
         } else {
+
             // Insert the new user into the database
             $stmt = $mysqli->prepare("INSERT INTO users (username, password, role, name, email) VALUES (?, ?, ?, ?, ?)");
             $stmt->bind_param('sssss', $username, $hashed_password, $role, $name, $email);
@@ -44,6 +46,7 @@ if (isset($_POST['user_register'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,15 +68,13 @@ if (isset($_POST['user_register'])) {
         <!-- Register form  -->
         <div class="register_form_container">
             <h2>Register</h2>
-            <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-            <?php if (isset($success)) { echo "<div style='color: green;'>$success</div>"; } ?>
             <form method="post" onsubmit="return registerValidation()">
                 <label for="username">Username</label>
                 <input required type="text" name="username" id="username">
                 <label for="name">Full Name</label>
                 <input required type="text" name="name" id="name">
                 <label for="email">Email</label>
-                <input required type="email" name="email" id="email">
+                <input required type="text" name="email" id="email">
                 <label for="password">Password</label>
                 <input required type="password" name="password" id="password">
                 <label for="confirm_password">Confirm Password</label>
