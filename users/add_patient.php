@@ -23,7 +23,7 @@ if (isset($_POST['add_patient'])) {
         $stmt->bind_param('sissss', $name, $age, $gender, $contact_number, $student_employee_number, $address);
         if ($stmt->execute()) {
             $success = "Patient added successfully";
-            header("location:his_admin_dashboard.php");
+            header("dashboard.php");
             exit();
         } else {
             $err = "Please try again.";
@@ -41,7 +41,6 @@ if (isset($_POST['add_patient'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Patient</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="./validation.js"></script>
     <link rel="stylesheet" href="./users/addpatient.css">
 
 </head>
@@ -59,7 +58,7 @@ if (isset($_POST['add_patient'])) {
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="his_admin_dashboard.php">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0);">Patients</a></li>
                             <li class="breadcrumb-item active">Add Patient</li>
                         </ol>
@@ -120,16 +119,20 @@ if (isset($_POST['add_patient'])) {
                             <button type="submit" name="add_patient" class="btn btn-primary">Add Patient</button>
                         </form>
                         <!-- End Patient Form -->
-                    </div> <!-- end card-body -->
-                </div> <!-- end card -->
-            </div> <!-- end col -->
+                    </div> 
+                </div> 
+            </div> 
         </div>
         <!-- end row -->
     </div> <!-- container -->
+
     <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
         <div style="text-align: center;">
             <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
+    
+    <script src=".\validation.js"></script>
+
 </body>
 </html>

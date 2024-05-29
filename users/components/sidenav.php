@@ -61,13 +61,13 @@
 </head>
 <body>
   <div class="sidebar">
-    <div class="menu-item dropdown-toggle" style="margin-top: 2rem;">
+    <div class="menu-item dropdown-toggle" style="margin-top: 3rem;">
       Patient Registration
       <i class="fas fa-chevron-down"></i>
     </div>
     <div class="dropdown-menu">
       <a href="add_patient.php">Add Patient Details</a>
-      <a href="#">Sub-item 2</a>
+      <a href="manage_patients.php">Manage Patients</a>
     </div>
 
     <div class="menu-item dropdown-toggle">

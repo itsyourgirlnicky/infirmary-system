@@ -40,3 +40,35 @@ function loginValidation() {
 
     return true;
 }
+
+// this handle the validation of the AddPatient logic
+function addpatientValidation() {
+    var name = document.getElementById('name').value.trim();
+    var age = document.getElementById('age').value.trim();
+    var gender = document.getElementById('gender').value.trim();
+    var contact_number = document.getElementById('contact_number').value.trim();
+    var student_employee_number = document.getElementById('student_employee_number').value.trim();
+    var address = document.getElementById('address').value.trim();
+
+    // Client-side validation
+    if (!name || !age || !gender || !contact_number || !student_employee_number || !address) {
+        alert("All fields are required.");
+        return false;
+    }
+
+    if (isNaN(age) || age <= 0) {
+        alert("Invalid age.");
+        return false;
+    }
+
+    if (isNaN(contact_number)) {
+        alert("Invalid contact number.");
+        return false;
+    }
+
+    return true;
+}
+
+function triageformvalidation() {
+    
+}
