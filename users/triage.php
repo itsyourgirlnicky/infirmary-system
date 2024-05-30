@@ -30,7 +30,7 @@ include('config.php');
                         <div class="page-title-box">
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="dasboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Triage</a></li>
                                     <li class="breadcrumb-item active">Records</li>
                                 </ol>
@@ -82,7 +82,7 @@ include('config.php');
                                                 <td><?php echo $row->address; ?></td>
                                                 <td><?php echo $row->age; ?> Years</td>
                                                 <td><?php echo $row->gender; ?></td>
-                                                <td><a href="capture_vitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a></td>
+                                                <td><a href="capturevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
