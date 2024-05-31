@@ -30,6 +30,8 @@ if (isset($_POST['add_vitals'])) {
         // Declare a variable which will be passed to the alert function
         if ($stmt) {
             $success = "Patient Vitals Added";
+            header("Location: triage.php"); // Redirect to triage.php
+            exit();
         } else {
             $err = "Please Try Again Or Try Later";
         }

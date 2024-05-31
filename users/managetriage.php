@@ -61,7 +61,7 @@ include('config.php');
                             <td><?php echo $row->gender; ?></td>
                             <td>
                                 <a href="view_vitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-eye"></i> View</a>
-                                <a href="update_vitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
+                                <a href="updatevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
                             </td>
                         </tr>
                     </tbody>

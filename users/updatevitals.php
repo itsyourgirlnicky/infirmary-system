@@ -2,11 +2,9 @@
 session_start();
 include('config.php');
 
-$vitals = null; // Initialize the $vitals variable
-
 // Check if the vital_id is set in the GET request
-if (isset($_POST['vital_id'])) {
-    $vital_id = intval($_POST['vital_id']);
+if (isset($_GET['vital_id'])) {
+    $vital_id = intval($_GET['vital_id']);
     
     // Fetch vital details
     $query = "SELECT * FROM vitals WHERE vital_id = ?";
@@ -19,7 +17,6 @@ if (isset($_POST['vital_id'])) {
 
 // Update vital details
 if (isset($_POST['update_vitals'])) {
-    $vital_id = $_POST['vital_id']; // Ensure this line to get vital_id from the form
     $temperature = $_POST['temperature'];
     $blood_pressure = $_POST['blood_pressure'];
     $weight = $_POST['weight'];
@@ -34,7 +31,6 @@ if (isset($_POST['update_vitals'])) {
     if ($stmt) {
         $success = "Patient vitals updated successfully";
         header("Location: triage.php");
-        exit();
     } else {
         $err = "Please try again later";
     }
@@ -48,7 +44,7 @@ if (isset($_POST['update_vitals'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Vitals</title>
-    <link rel="stylesheet" href="updatevitals.css">
+    <link rel="stylesheet" href="updatepatient.css">
     <style>
         body {
             display: flex;
@@ -93,23 +89,22 @@ if (isset($_POST['update_vitals'])) {
         <?php if (isset($err)) { echo "<p style='color: red;'>$err</p>"; } ?>
         <?php if (isset($success)) { echo "<p style='color: green;'>$success</p>"; } ?>
         <form method="post">
-            <input type="hidden" name="vital_id" value="<?php echo htmlspecialchars($vital_id); ?>">
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="temperature" class="col-form-label">Temperature (°C)</label>
-                    <input type="text" required="required" name="temperature" value="<?php echo htmlspecialchars($vitals->temperature ?? ''); ?>" class="form-control" id="temperature" placeholder="Temperature">
+                    <input type="text" required="required" name="temperature" value="<?php echo htmlspecialchars($vitals->temperature); ?>" class="form-control" id="temperature" placeholder="Temperature">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="blood_pressure" class="col-form-label">Blood Pressure (mmHg)</label>
-                    <input type="text" required="required" name="blood_pressure" value="<?php echo htmlspecialchars($vitals->blood_pressure ?? ''); ?>" class="form-control" id="blood_pressure" placeholder="Blood Pressure">
+                    <input type="text" required="required" name="blood_pressure" value="<?php echo htmlspecialchars($vitals->blood_pressure); ?>" class="form-control" id="blood_pressure" placeholder="Blood Pressure">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="weight" class="col-form-label">Weight (kg)</label>
-                    <input type="text" required="required" name="weight" value="<?php echo htmlspecialchars($vitals->weight ?? ''); ?>" class="form-control" id="weight" placeholder="Weight">
+                    <input type="text" required="required" name="weight" value="<?php echo htmlspecialchars($vitals->weight); ?>" class="form-control" id="weight" placeholder="Weight">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="height" class="col-form-label">Height (cm)</label>
-                    <input type="text" required="required" name="height" value="<?php echo htmlspecialchars($vitals->height ?? ''); ?>" class="form-control" id="height" placeholder="Height">
+                    <input type="text" required="required" name="height" value="<?php echo htmlspecialchars($vitals->height); ?>" class="form-control" id="height" placeholder="Height">
                 </div>
             </div>
             <button type="submit" name="update_vitals" class="btn btn-primary">Update Vitals</button>
