@@ -69,6 +69,32 @@ function addpatientValidation() {
     return true;
 }
 
+//triage Validation
 function triageformvalidation() {
-    
+    const temperature = document.getElementById('temperature').value.trim();
+    const bloodPressure = document.getElementById('blood_pressure').value.trim();
+    const weight = document.getElementById('weight').value.trim();
+    const height = document.getElementById('height').value.trim();
+
+    if (!temperature || isNaN(temperature) || temperature <= 0) {
+        alert("Please enter a valid temperature.");
+        return false;
+    }
+
+    if (!bloodPressure || isNaN(bloodPressure) || bloodPressure <= 0) {
+        alert("Please enter a valid blood pressure.");
+        return false;
+    }
+
+    if (!weight || isNaN(weight) || weight <= 0) {
+        alert("Please enter a valid weight.");
+        return false;
+    }
+
+    if (!height || isNaN(height) || height <= 0) {
+        alert("Please enter a valid height.");
+        return false;
+    }
+
+    return true;
 }

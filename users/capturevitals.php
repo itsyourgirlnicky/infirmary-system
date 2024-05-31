@@ -3,25 +3,36 @@ session_start();
 include('config.php');
 
 if (isset($_POST['add_vitals'])) {
-    $patient_id = $_POST['patient_id'];
+    $patient_id = trim($_POST['patient_id']);
     $user_id = $_SESSION['user_id']; 
     $visit_date = date('Y-m-d');
-    $temperature = $_POST['temperature'];
-    $blood_pressure = $_POST['blood_pressure'];
-    $weight = $_POST['weight'];
-    $height = $_POST['height'];
+    $temperature = trim($_POST['temperature']);
+    $blood_pressure = trim($_POST['blood_pressure']);
+    $weight = trim($_POST['weight']);
+    $height = trim($_POST['height']);
 
-    // SQL to insert captured values
-    $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $mysqli->prepare($query);
-    $rc = $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height);
-    $stmt->execute();
-
-    // Declare a variable which will be passed to the alert function
-    if ($stmt) {
-        $success = "Patient Vitals Added";
+    // Server-side validation
+    if (empty($temperature) || !is_numeric($temperature) || $temperature <= 0) {
+        $err = "Invalid temperature.";
+    } elseif (empty($blood_pressure) || !is_numeric($blood_pressure) || $blood_pressure <= 0) {
+        $err = "Invalid blood pressure.";
+    } elseif (empty($weight) || !is_numeric($weight) || $weight <= 0) {
+        $err = "Invalid weight.";
+    } elseif (empty($height) || !is_numeric($height) || $height <= 0) {
+        $err = "Invalid height.";
     } else {
-        $err = "Please Try Again Or Try Later";
+        // SQL to insert captured values
+        $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $rc = $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height);
+        $stmt->execute();
+
+        // Declare a variable which will be passed to the alert function
+        if ($stmt) {
+            $success = "Patient Vitals Added";
+        } else {
+            $err = "Please Try Again Or Try Later";
+        }
     }
 }
 ?>
@@ -33,9 +44,34 @@ if (isset($_POST['add_vitals'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture Vitals</title>
-    <link rel="stylesheet" href="addpatient.css">
+    <link rel="stylesheet" href="vitals.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .content-page {
+            flex: 1;
+        }
+        .footer {
+            background-color: #800000;
+            color: #ffc300;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
+    <header class="navbar">
+        <div class="container text-center">
+            <h1 style="margin: 0; font-size: 24px; color: #ffc300;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
+        </div>
+    </header>
     <?php
     $patient_id = $_GET['patient_id'];
     $ret = "SELECT * FROM patients WHERE patient_id = ?";
@@ -60,7 +96,6 @@ if (isset($_POST['add_vitals'])) {
                                         <li class="breadcrumb-item active">Capture Vitals</li>
                                     </ol>
                                 </div>
-                                <h4 class="page-title">Capture <?php echo $row->name; ?>'s Vitals</h4>
                             </div>
                         </div>
                     </div>
@@ -73,6 +108,8 @@ if (isset($_POST['add_vitals'])) {
                                     <h4 class="header-title">Fill all fields</h4>
                                     <!--Add Patient Form-->
                                     <form method="post">
+                                        <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
+                                        <?php if (isset($success)) { echo "<div style='color: green;'>$success</div>"; } ?>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="patientName" class="col-form-label">Patient Name</label>
@@ -103,7 +140,7 @@ if (isset($_POST['add_vitals'])) {
                                             </div>
                                         </div>
 
-                                        <button type="submit" name="add_vitals" class="ladda-button btn btn-success" data-style="expand-right">Add Vitals</button>
+                                        <button type="submit" name="add_vitals" class="btn btn-primary" data-style="expand-right">Add Vitals</button>
                                     </form>
                                     <!--End Patient Form-->
                                 </div> <!-- end card-body -->
@@ -115,9 +152,14 @@ if (isset($_POST['add_vitals'])) {
             </div> <!-- content -->
         </div>
     <?php } ?>
-    <!-- ============================================================== -->
-    <!-- End Page content -->
-    <!-- ============================================================== -->
+    <footer class="footer">
+        <div class="container">
+            <p style>&copy; 2024 Catholic University of Eastern Africa</p>
+        </div>
+    </footer>
+
+    <script src=".\validation.js"></script>
+
 </body>
 
 </html>
