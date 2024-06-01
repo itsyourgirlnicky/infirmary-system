@@ -2,25 +2,32 @@
 session_start();
 include('config.php');
 if (isset($_POST['user_login'])) {
-    $username = $_POST['username'];
-    $password = sha1(md5($_POST['password'])); //double encryption
+    $username = trim($_POST['username']);
+    $password = sha1(md5(trim($_POST['password']))); //double encryption
 
-    // SQL to insert captured values
-    $stmt = $mysqli->prepare("SELECT username, password, user_id FROM users WHERE username=? AND password=?");
-    $stmt->bind_param('ss', $username, $password);
-    $stmt->execute();
-    $stmt->bind_result($username, $password, $user_id);
-    $rs = $stmt->fetch();
-
-    if ($rs) {
-        $success = "Successful!";
-        header("location:dashboard.php");
-        exit();
+    // Server-side validation
+    if (empty($username) || empty($password)) {
+        $err = "All fields are required.";
     } else {
-        $err = "Please try again";
+
+        // SQL to validate user credentials
+        $stmt = $mysqli->prepare("SELECT user_id FROM users WHERE username=? AND password=?");
+        $stmt->bind_param('ss', $username, $password);
+        $stmt->execute();
+        $stmt->bind_result($user_id);
+        $rs = $stmt->fetch();
+
+        if ($rs) {
+            $_SESSION['user_id'] = $user_id;
+            header("location:dashboard.php");
+            exit();
+        } else {
+            $err = "Invalid username or password.";
+        }
+        $stmt->close();
     }
-    $stmt->close();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -45,19 +52,19 @@ if (isset($_POST['user_login'])) {
 
     <!-- Login form content here -->
     <div class="login_form_wrapper">
-        <form id="loginForm" method="post" onsubmit="return loginValidation()"
-            <label for="Username">Username</label><br>
+        <form id="loginForm" method="post" onsubmit="return loginValidation()">
+            <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
+            <label for="username">Username</label><br>
             <input required type="text" id="username" name="username"><br>
-            <label for="password">Password:</label><br>
+            <label for="password">Password</label><br>
             <input required type="password" id="password" name="password"><br>
-            <button type="submit">Login</button>
+            <button type="submit" name="user_login">Login</button>
         </form>
         <div class="options">
             <p><a href="register.php">Register</a> | <a href="forgot_password.php">Forgot your password?</a></p>
         </div>
     </div>
 
-    </div>
     <script src="../js/validation.js"></script>
 </body>
 <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
