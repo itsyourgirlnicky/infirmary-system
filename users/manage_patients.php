@@ -66,7 +66,6 @@ include('config.php');
                                 <td><?php echo htmlspecialchars($row->student_employee_number); ?></td>
                                 <td><?php echo htmlspecialchars($row->address); ?></td>
                                 <td>
-                                    <a href="viewpatient.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-eye"></i> View</a>
                                     <a href="update_patient.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
                                 </td>
                             </tr>

@@ -13,6 +13,10 @@ if (isset($_GET['vital_id'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     $vitals = $result->fetch_object();
+} else {
+    // Handle the case where vital_id is not set
+    header("Location: triage.php");
+    exit();
 }
 
 // Update vital details
@@ -30,11 +34,11 @@ if (isset($_POST['update_vitals'])) {
 
     if ($stmt) {
         $success = "Patient vitals updated successfully";
-        header("Location: triage.php");
+        header("Location: managevitals.php");
+        exit();
     } else {
         $err = "Please try again later";
     }
-    $stmt->close();
 }
 ?>
 
@@ -44,7 +48,7 @@ if (isset($_POST['update_vitals'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Vitals</title>
-    <link rel="stylesheet" href="updatepatient.css">
+    <link rel="stylesheet" href="updatepatients.css"> 
     <style>
         body {
             display: flex;
@@ -78,7 +82,7 @@ if (isset($_POST['update_vitals'])) {
     <div class="page-title-box">
         <div class="breadcrumb">
             <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="triage.php">Triage</a></div>
+            <div class="breadcrumb-item"><a href="managevitals.php">Manage Triage</a></div>
             <div class="breadcrumb-item active">Update Vitals</div>
         </div>
     </div>
@@ -107,7 +111,7 @@ if (isset($_POST['update_vitals'])) {
                     <input type="text" required="required" name="height" value="<?php echo htmlspecialchars($vitals->height); ?>" class="form-control" id="height" placeholder="Height">
                 </div>
             </div>
-            <button type="submit" name="update_vitals" class="btn btn-primary">Update Vitals</button>
+            <button type="submit" name="update_vitals" class="btn btn-success">Update Vitals</button>
         </form>
     </div>
 
