@@ -13,6 +13,12 @@ if (isset($_GET['vital_id'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     $vitals = $result->fetch_object();
+
+    if (!$vitals) {
+        // Handle the case where the vital record is not found
+        echo "Vital record not found.";
+        exit();
+    }
 } else {
     // Handle the case where vital_id is not set
     header("Location: triage.php");
@@ -29,7 +35,7 @@ if (isset($_POST['update_vitals'])) {
     // SQL to update vital details
     $query = "UPDATE vitals SET temperature = ?, blood_pressure = ?, weight = ?, height = ? WHERE vital_id = ?";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('sssii', $temperature, $blood_pressure, $weight, $height, $vital_id);
+    $stmt->bind_param('dssdi', $temperature, $blood_pressure, $weight, $height, $vital_id);
     $stmt->execute();
 
     if ($stmt) {
@@ -48,7 +54,7 @@ if (isset($_POST['update_vitals'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Vitals</title>
-    <link rel="stylesheet" href="updatepatients.css"> 
+    <link rel="stylesheet" href="updatepatient.css"> 
     <style>
         body {
             display: flex;

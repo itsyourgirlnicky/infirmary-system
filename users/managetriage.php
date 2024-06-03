@@ -80,8 +80,7 @@ include('config.php');
                                                 <td><?php echo htmlspecialchars($row->height); ?></td>
                                                 <td><?php echo htmlspecialchars($row->visit_date); ?></td>
                                                 <td>
-                                    <a href="updatevitals.php?vital_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
-                                                    
+                                                    <a href="updatevitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
                                                 </td>
                                             </tr>
                                         <?php $cnt++; } ?>
