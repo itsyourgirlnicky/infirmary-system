@@ -18,10 +18,10 @@
                 <a href="#"><i class="ion-bag"></i> <span>Patient Registration</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-color-filter-outline"></i>Add Patient Details</a>
+                    <a href="add_patient.php"><i class="ion-ios-color-filter-outline"></i>Add Patient Details</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-clock-outline"></i>Manage Patients</a>
+                    <a href="manage_patients.php"><i class="ion-ios-clock-outline"></i>Manage Patients</a>
                   </li>
                 </ul>
               </li>
@@ -29,16 +29,10 @@
                 <a href="#"><i class="ion-ios-settings"></i> <span class="">Triage</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-alarm-outline"></i>Watch</a>
+                    <a href="triage.php"><i class="ion-ios-alarm-outline"></i>Add Triage Details</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-camera-outline"></i>Creeper</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-chatboxes-outline"></i>Hate</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-cog-outline"></i>Grinder</a>
+                    <a href="managetriage.php"><i class="ion-ios-camera-outline"></i>Manage Triage</a>
                   </li>
                 </ul>
               </li>
@@ -46,19 +40,10 @@
                 <a href="#"><i class="ion-ios-briefcase-outline"></i> <span class="">Consultation</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-flame-outline"></i>Burn</a>
+                    <a href="consultation.php"><i class="ion-ios-flame-outline"></i>Add Consultation Details</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-lightbulb-outline"></i>Bulbs</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-location-outline"></i>Where You</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-locked-outline"></i>On Lock</a>
-                  </li>
-                   <li>
-                    <a href="#"><i class="ion-ios-navigate-outline"></i>Ghostface</a>
+                    <a href="manageconsultation.php"><i class="ion-ios-lightbulb-outline"></i>Manage Consultation</a>
                   </li>
                 </ul>
               </li>

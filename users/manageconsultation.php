@@ -8,7 +8,7 @@ include('config.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triage</title>
+    <title>manage Consultation</title>
     <link rel="stylesheet" href="managepatients.css">
 </head>
 <body>
@@ -31,8 +31,8 @@ include('config.php');
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="javascript: void(0);">Triage</a></li>
-                                    <li class="breadcrumb-item active">Records</li>
+                                    <li class="breadcrumb-item"><a href="consultation.php">Consultation</a></li>
+                                    <li class="breadcrumb-item active">Manage Consultation</li>
                                 </ol>
                             </div>
                         </div>
@@ -78,7 +78,8 @@ include('config.php');
                                                 <td><?php echo $row->patient_id; ?></td>
                                                 <td><?php echo $row->age; ?> Years</td>
                                                 <td><?php echo $row->gender; ?></td>
-                                                <td><a href="capturevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a></td>
+                                                <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Updates</a></td>
+                                                <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>lab Report</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
