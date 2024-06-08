@@ -88,7 +88,7 @@ if (isset($_POST['update_vitals'])) {
     <div class="page-title-box">
         <div class="breadcrumb">
             <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
-            <div class="breadcrumb-item"><a href="managevitals.php">Manage Triage</a></div>
+            <div class="breadcrumb-item"><a href="managetriage.php">Manage Triage</a></div>
             <div class="breadcrumb-item active">Update Vitals</div>
         </div>
     </div>

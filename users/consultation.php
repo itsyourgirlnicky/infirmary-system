@@ -64,7 +64,10 @@ include('config.php');
                                         </tr>
                                     </thead>
                                     <?php
-                                    $ret = "SELECT * FROM patients ORDER BY created_at DESC";
+                                    $ret = "SELECT p.*
+                                            FROM patients p
+                                            INNER JOIN vitals v ON p.patient_id = v.patient_id
+                                            ORDER BY p.created_at ASC";
                                     $stmt = $mysqli->prepare($ret);
                                     $stmt->execute();
                                     $res = $stmt->get_result();
@@ -79,7 +82,7 @@ include('config.php');
                                                 <td><?php echo $row->age; ?> Years</td>
                                                 <td><?php echo $row->gender; ?></td>
                                                 <td><a href="addconsultation.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Notes</a></td>
-                                                <td><a href="addconsultation.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>lab Request</a></td>
+                                                <td><a href="addlabrequest.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> Lab Request</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
@@ -109,4 +112,6 @@ include('config.php');
             </div>
         </footer>
 
-    </div
+    </div>
+</body>
+</html>

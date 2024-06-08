@@ -19,7 +19,7 @@ if (isset($_POST['user_register'])) {
         $err = "Passwords do not match.";
     } else {
 
-        // Hash the password
+        // Hash the password using double encryption
         $hashed_password = sha1(md5($password));
 
         // Check if the username or email already exists

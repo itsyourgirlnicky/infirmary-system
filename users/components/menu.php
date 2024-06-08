@@ -51,19 +51,10 @@
                 <a href="#"><i class="ion-ios-analytics-outline"></i> <span class="">Laboratory</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-timer-outline"></i>Timers</a>
+                    <a href="#"><i class="ion-ios-timer-outline"></i>Lab Requests</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-arrow-graph-down-left"></i>You Lose</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-partlysunny-outline"></i>Stormy</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-timer-outline"></i>Lookie Look</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-game-controller-a-outline"></i>Dork Mfer</a>
+                    <a href="#"><i class="ion-arrow-graph-down-left"></i>Lab Report</a>
                   </li>
                 </ul>
               </li>

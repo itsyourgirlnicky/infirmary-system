@@ -10,25 +10,29 @@ $stmt->execute();
 $res = $stmt->get_result();
 $patient = $res->fetch_object();
 
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $patient_id = $_POST['patient_id'];
     $user_id = $_SESSION['user_id'];
     $visit_date = date('Y-m-d');
-    $consultation_type = $_POST['consultation_type'];
-    $notes = $_POST['notes'];
-    $diagnosis = $_POST['diagnosis'];
-    $treatment_plan = $_POST['treatment_plan'];
+    $consultation_type = trim($_POST['consultation_type']);
+    $notes = trim($_POST['notes']);
+    $diagnosis = trim($_POST['diagnosis']);
+    $treatment_plan = trim($_POST['treatment_plan']);
 
-    $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
-
-    if ($stmt->execute()) {
-        header("Location: manageconsultations.php");
-        exit();
+    // Server-side validation
+    if (empty($consultation_type) || empty($notes) || empty($diagnosis) || empty($treatment_plan)) {
+        $err = "All fields are required.";
     } else {
-        echo "Error: " . $stmt->error;
+        $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
+
+        if ($stmt->execute()) {
+            header("Location: manageconsultations.php");
+            exit();
+        } else {
+            $err = "Error: " . $stmt->error;
+        }
     }
 }
 
@@ -41,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultation Details</title>
     <link rel="stylesheet" href="consultation.css"> 
+    <script src="validation.js"></script>
 </head>
 <body>
     <header class="navbar">
@@ -51,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container">
         <h2 class="header-title">Consultation Details</h2>
-        <form method="post" action="consultation.php">
+        <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
+        <form method="post" action="consultation.php" onsubmit="return validateConsultationForm()">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
                 <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name); ?>" readonly>

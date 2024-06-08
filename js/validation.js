@@ -98,3 +98,30 @@ function triageformvalidation() {
 
     return true;
 }
+
+// Consultation Clientside validation
+function validateConsultationForm() {
+    const consultationType = document.getElementById('consultation_type').value;
+    const notes = document.getElementById('notes').value.trim();
+    const diagnosis = document.getElementById('diagnosis').value.trim();
+    const treatmentPlan = document.getElementById('treatment_plan').value.trim();
+
+    if (consultationType === '') {
+        alert('Please select a consultation type.');
+        return false;
+    }
+    if (notes === '') {
+        alert('Please enter notes.');
+        return false;
+    }
+    if (diagnosis === '') {
+        alert('Please enter a diagnosis.');
+        return false;
+    }
+    if (treatmentPlan === '') {
+        alert('Please enter a treatment plan.');
+        return false;
+    }
+
+    return true;
+}

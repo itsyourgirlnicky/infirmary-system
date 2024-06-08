@@ -64,7 +64,11 @@ include('config.php');
                                         </tr>
                                     </thead>
                                     <?php
-                                    $ret = "SELECT * FROM patients ORDER BY created_at DESC";
+                                    $ret = "SELECT p.* 
+                                            FROM patients p
+                                            LEFT JOIN vitals v ON p.patient_id = v.patient_id
+                                            WHERE v.patient_id IS NULL
+                                            ORDER BY p.created_at DESC";
                                     $stmt = $mysqli->prepare($ret);
                                     $stmt->execute();
                                     $res = $stmt->get_result();
@@ -108,4 +112,6 @@ include('config.php');
             </div>
         </footer>
 
-    </div
+    </div>
+</body>
+</html>
