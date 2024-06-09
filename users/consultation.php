@@ -82,7 +82,7 @@ include('config.php');
                                                 <td><?php echo $row->age; ?> Years</td>
                                                 <td><?php echo $row->gender; ?></td>
                                                 <td><a href="addconsultation.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Notes</a></td>
-                                                <td><a href="addlabrequest.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> Lab Request</a></td>
+                                                <td><a href="labrequest.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> Lab Request</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>

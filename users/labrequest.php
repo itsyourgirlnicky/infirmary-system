@@ -13,22 +13,19 @@ $patient = $res->fetch_object();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $patient_id = $_POST['patient_id'];
     $user_id = $_SESSION['user_id'];
-    $visit_date = date('Y-m-d');
-    $consultation_type = trim($_POST['consultation_type']);
+    $lab_test_type = trim($_POST['lab_test_type']);
     $notes = trim($_POST['notes']);
-    $diagnosis = trim($_POST['diagnosis']);
-    $treatment_plan = trim($_POST['treatment_plan']);
 
     // Server-side validation
-    if (empty($consultation_type) || empty($notes) || empty($diagnosis) || empty($treatment_plan)) {
+    if (empty($lab_test_type) || empty($notes)) {
         $err = "All fields are required.";
     } else {
-        $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO lab_requests (patient_id, user_id, lab_test_type, notes) VALUES (?, ?, ?, ?)";
         $stmt = $mysqli->prepare($query);
-        $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
+        $stmt->bind_param('iiss', $patient_id, $user_id, $lab_test_type, $notes);
 
         if ($stmt->execute()) {
-            header("Location: manageconsultations.php");
+            header("Location: managelabrequests.php");
             exit();
         } else {
             $err = "Error: " . $stmt->error;
@@ -42,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultation Details</title>
-    <link rel="stylesheet" href="consultation.css"> 
+    <title>Lab Request</title>
+    <link rel="stylesheet" href="labrequest.css">
     <script src="validation.js"></script>
 </head>
 <body>
@@ -54,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </header>
 
     <div class="container">
-        <h2 class="header-title">Consultation Details</h2>
+        <h2 class="header-title">Lab Request</h2>
         <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form method="post" action="consultation.php" onsubmit="return validateConsultationForm()">
+        <form method="post" action="addlabrequest.php" onsubmit="return validateLabRequestForm()">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
                 <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name); ?>" readonly>
@@ -96,26 +93,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
             <div class="form-group">
-                <label for="consultation_type">Consultation Type</label>
-                <select id="consultation_type" name="consultation_type">
-                    <option value="general">General</option>
-                    <option value="dental">Dental</option>
-                    <option value="vct">VCT</option>
+                <label for="lab_test_type">Lab Test Type</label>
+                <select id="lab_test_type" name="lab_test_type">
+                    <option value="blood">Blood Test</option>
+                    <option value="urine">Urine Test</option>
+                    <option value="xray">X-ray</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="notes">Notes</label>
                 <textarea id="notes" name="notes" rows="4"></textarea>
             </div>
-            <div class="form-group">
-                <label for="diagnosis">Diagnosis</label>
-                <textarea id="diagnosis" name="diagnosis" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="treatment_plan">Treatment Plan</label>
-                <textarea id="treatment_plan" name="treatment_plan" rows="4"></textarea>
-            </div>
-            <button type="submit" class="btn">Save Consultation</button>
+            <button type="submit" class="btn">Submit Request</button>
         </form>
     </div>
 
@@ -124,7 +113,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p>&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
-    <script src=".\validation.js"></script>
-
 </body>
 </html>
