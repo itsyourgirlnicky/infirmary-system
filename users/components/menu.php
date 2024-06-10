@@ -51,7 +51,7 @@
                 <a href="#"><i class="ion-ios-analytics-outline"></i> <span class="">Laboratory</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-timer-outline"></i>Lab Requests</a>
+                    <a href="managelabrequest.php"><i class="ion-ios-timer-outline"></i>Lab Requests</a>
                   </li>
                   <li>
                     <a href="#"><i class="ion-arrow-graph-down-left"></i>Lab Report</a>

@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultation Details</title>
     <link rel="stylesheet" href="consultation.css"> 
-    <script src="validation.js"></script>
 </head>
 <body>
     <header class="navbar">
