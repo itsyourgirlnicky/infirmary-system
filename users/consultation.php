@@ -11,6 +11,7 @@ include('config.php');
     <title>Consultation</title>
     <link rel="stylesheet" href="managepatients.css">
 </head>
+
 <body>
     <header class="navbar">
         <div class="container text-center">
@@ -58,8 +59,6 @@ include('config.php');
                                             <th>#</th>
                                             <th data-toggle="true">Patient Name</th>
                                             <th data-hide="phone">Patient ID</th>
-                                            <th data-hide="phone">Age</th>
-                                            <th data-hide="phone">Gender</th>
                                             <th data-hide="phone">Action</th>
                                         </tr>
                                     </thead>
@@ -67,6 +66,11 @@ include('config.php');
                                     $ret = "SELECT p.*
                                             FROM patients p
                                             INNER JOIN vitals v ON p.patient_id = v.patient_id
+                                            WHERE NOT EXISTS (
+                                                SELECT 1 FROM labrequests lr WHERE lr.patient_id = p.patient_id
+                                            ) AND NOT EXISTS (
+                                                SELECT 1 FROM prescriptions pr WHERE pr.patient_id = p.patient_id
+                                            )
                                             ORDER BY p.created_at ASC";
                                     $stmt = $mysqli->prepare($ret);
                                     $stmt->execute();
@@ -79,10 +83,9 @@ include('config.php');
                                                 <td><?php echo $cnt; ?></td>
                                                 <td><?php echo $row->name; ?></td>
                                                 <td><?php echo $row->patient_id; ?></td>
-                                                <td><?php echo $row->age; ?> Years</td>
-                                                <td><?php echo $row->gender; ?></td>
                                                 <td><a href="addconsultation.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Notes</a></td>
                                                 <td><a href="labrequest.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> Lab Request</a></td>
+                                                <td><a href="prescription.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> Prescription</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>

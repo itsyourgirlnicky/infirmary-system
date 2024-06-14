@@ -3,14 +3,17 @@ session_start();
 include('config.php');
 
 $patient_id = $_GET['patient_id'];
-$ret = "SELECT patients.name, patients.age, patients.gender, vitals.temperature, vitals.blood_pressure, vitals.weight, vitals.height FROM patients JOIN vitals ON patients.patient_id = vitals.patient_id WHERE patients.patient_id = ?";
+$ret = "SELECT patients.name, patients.age, patients.gender, vitals.temperature, vitals.blood_pressure, vitals.weight, vitals.height 
+        FROM patients 
+        JOIN vitals ON patients.patient_id = vitals.patient_id 
+        WHERE patients.patient_id = ?";
 $stmt = $mysqli->prepare($ret);
 $stmt->bind_param('i', $patient_id);
 $stmt->execute();
 $res = $stmt->get_result();
 $patient = $res->fetch_object();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (isset($_POST['add_consultation'])) {
     $patient_id = $_POST['patient_id'];
     $user_id = $_SESSION['user_id'];
     $visit_date = date('Y-m-d');
@@ -23,12 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($consultation_type) || empty($notes) || empty($diagnosis) || empty($treatment_plan)) {
         $err = "All fields are required.";
     } else {
-        $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $mysqli->prepare($query);
         $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
 
         if ($stmt->execute()) {
-            header("Location: manageconsultations.php");
+            header("Location: consultation.php");
             exit();
         } else {
             $err = "Error: " . $stmt->error;
@@ -43,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultation Details</title>
-    <link rel="stylesheet" href="consultation.css"> 
+    <link rel="stylesheet" href="consultation.css">
 </head>
 <body>
     <header class="navbar">
@@ -55,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <h2 class="header-title">Consultation Details</h2>
         <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form method="post" action="consultation.php" onsubmit="return validateConsultationForm()">
+        <form method="post" onsubmit="return validateConsultationForm()">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
                 <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name); ?>" readonly>
@@ -96,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="consultation_type">Consultation Type</label>
-                <select id="consultation_type" name="consultation_type">
+                <select required id="consultation_type" name="consultation_type">
                     <option value="general">General</option>
                     <option value="dental">Dental</option>
                     <option value="vct">VCT</option>
@@ -104,17 +108,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="notes">Notes</label>
-                <textarea id="notes" name="notes" rows="4"></textarea>
+                <textarea required id="notes" name="notes" rows="4"></textarea>
             </div>
             <div class="form-group">
                 <label for="diagnosis">Diagnosis</label>
-                <textarea id="diagnosis" name="diagnosis" rows="4"></textarea>
+                <textarea required id="diagnosis" name="diagnosis" rows="4"></textarea>
             </div>
             <div class="form-group">
                 <label for="treatment_plan">Treatment Plan</label>
-                <textarea id="treatment_plan" name="treatment_plan" rows="4"></textarea>
+                <textarea required id="treatment_plan" name="treatment_plan" rows="4"></textarea>
             </div>
-            <button type="submit" class="btn">Save Consultation</button>
+            <button type="submit" name="add_consultation" class="btn">Save Consultation</button>
         </form>
     </div>
 
@@ -123,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <p>&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
-    <script src=".\validation.js"></script>
 
+    <script src="validation.js"></script>
 </body>
 </html>

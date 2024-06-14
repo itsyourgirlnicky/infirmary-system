@@ -4,18 +4,18 @@ include('config.php');
 
 $err = ''; // Initialize error variable
 
-// Get patient_id and lab_request_id from URL if set
+// Get patient_id and prescription_id from URL if set
 $patient_id = isset($_GET['patient_id']) ? $_GET['patient_id'] : null;
-$lab_request_id = isset($_GET['lab_request_id']) ? $_GET['lab_request_id'] : null;
+$prescription_id = isset($_GET['prescription_id']) ? $_GET['prescription_id'] : null;
 
-if ($lab_request_id) {
-    // Fetch existing lab request details for update
-    $query = "SELECT * FROM labrequests WHERE lab_request_id = ?";
+if ($prescription_id) {
+    // Fetch existing prescription details for update
+    $query = "SELECT * FROM prescriptions WHERE prescription_id = ?";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $lab_request_id);
+    $stmt->bind_param('i', $prescription_id);
     $stmt->execute();
     $res = $stmt->get_result();
-    $lab_request = $res->fetch_object();
+    $prescription = $res->fetch_object();
 }
 
 // Fetch patient name
@@ -42,34 +42,32 @@ if ($patient_id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $lab_request_id = isset($_POST['lab_request_id']) ? $_POST['lab_request_id'] : null;
+    $prescription_id = isset($_POST['prescription_id']) ? $_POST['prescription_id'] : null;
     $consultation_id = $_POST['consultation_id'];
     $patient_id = $_POST['patient_id'];
-    $test_name = trim($_POST['test_name']);
-    $result = trim($_POST['result']);
-    $status = trim($_POST['status']);
+    $medication = trim($_POST['medication']);
+    $dosage = trim($_POST['dosage']);
+    $duration = trim($_POST['duration']);
     $created_at = date('Y-m-d H:i:s');
 
     // Server-side validation
-    if (empty($test_name) || empty($status)) {
-        $err = "Test name and status are required.";
-    } elseif ($lab_request_id && empty($result)) {
-        $err = "Result is required for updating.";
+    if (empty($medication) || empty($dosage) || empty($duration)) {
+        $err = "All fields are required.";
     } else {
-        if ($lab_request_id) {
-            // Update existing lab request
-            $query = "UPDATE labrequests SET test_name = ?, result = ?, status = ? WHERE lab_request_id = ?";
+        if ($prescription_id) {
+            // Update existing prescription
+            $query = "UPDATE prescriptions SET medication = ?, dosage = ?, duration = ? WHERE prescription_id = ?";
             $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('sssi', $test_name, $result, $status, $lab_request_id);
+            $stmt->bind_param('sssi', $medication, $dosage, $duration, $prescription_id);
         } else {
-            // Insert new lab request
-            $query = "INSERT INTO labrequests (consultation_id, patient_id, test_name, result, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+            // Insert new prescription
+            $query = "INSERT INTO prescriptions (consultation_id, patient_id, medication, dosage, duration, created_at) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('iissss', $consultation_id, $patient_id, $test_name, $result, $status, $created_at);
+            $stmt->bind_param('iissss', $consultation_id, $patient_id, $medication, $dosage, $duration, $created_at);
         }
 
         if ($stmt->execute()) {
-            header("Location: consultation.php?patient_id=$patient_id");
+            header("Location: manageprescriptions.php");
             exit();
         } else {
             $err = "Error: " . $stmt->error;
@@ -83,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</title>
+    <title><?php echo $prescription_id ? 'Update' : 'Add'; ?> Prescription</title>
     <link rel="stylesheet" href="consultation.css">
 </head>
 <body>
@@ -94,10 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </header>
 
     <div class="container">
-        <h2 class="header-title"><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</h2>
+        <h2 class="header-title"><?php echo $prescription_id ? 'Update' : 'Add'; ?> Prescription</h2>
         <?php if ($err) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form id="labRequestForm" method="post" action="addlabrequest.php?patient_id=<?php echo $patient_id; ?><?php if ($lab_request_id) echo '&lab_request_id=' . $lab_request_id; ?>" onsubmit="return validateLabRequestForm()">
-            <input type="hidden" name="lab_request_id" value="<?php echo htmlspecialchars($lab_request_id); ?>">
+        <form id="prescriptionForm" method="post" action="addprescription.php?patient_id=<?php echo $patient_id; ?><?php if ($prescription_id) echo '&prescription_id=' . $prescription_id; ?>" onsubmit="return validatePrescriptionForm()">
+            <input type="hidden" name="prescription_id" value="<?php echo htmlspecialchars($prescription_id); ?>">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
                 <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name ?? ''); ?>" readonly>
@@ -108,21 +106,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
             <div class="form-group">
-                <label for="testName">Test Name</label>
-                <input type="text" id="testName" name="test_name" value="<?php echo htmlspecialchars($lab_request->test_name ?? ''); ?>" required>
+                <label for="medication">Medication</label>
+                <textarea id="medication" name="medication" rows="4" required><?php echo htmlspecialchars($prescription->medication ?? ''); ?></textarea>
             </div>
             <div class="form-group">
-                <label for="result">Result</label>
-                <textarea id="result" name="result" rows="4"><?php echo htmlspecialchars($lab_request->result ?? ''); ?></textarea>
+                <label for="dosage">Dosage</label>
+                <textarea id="dosage" name="dosage" rows="4" required><?php echo htmlspecialchars($prescription->dosage ?? ''); ?></textarea>
             </div>
             <div class="form-group">
-                <label for="status">Status</label>
-                <select id="status" name="status" required>
-                    <option value="pending" <?php if (isset($lab_request->status) && $lab_request->status == 'pending') echo 'selected'; ?>>Pending</option>
-                    <option value="completed" <?php if (isset($lab_request->status) && $lab_request->status == 'completed') echo 'selected'; ?>>Completed</option>
-                </select>
+                <label for="duration">Duration</label>
+                <textarea id="duration" name="duration" rows="4" required><?php echo htmlspecialchars($prescription->duration ?? ''); ?></textarea>
             </div>
-            <button type="submit" class="btn"><?php echo $lab_request_id ? 'Update' : 'Save'; ?> Lab Request</button>
+            <button type="submit" class="btn"><?php echo $prescription_id ? 'Update' : 'Save'; ?> Prescription</button>
         </form>
     </div>
 
@@ -133,5 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </footer>
 
     <script src="validation.js"></script>
+
 </body>
 </html>

@@ -62,16 +62,10 @@
                 <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Pharmacy</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-filing-outline"></i>File Cab</a>
+                    <a href="#"><i class="ion-ios-filing-outline"></i>Prescriptions</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-information-outline"></i>Infos</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-paperplane-outline"></i>Planes</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-android-star-outline"></i>Shop</a>
+                    <a href="#"><i class="ion-ios-information-outline"></i>Manage Prescriptions</a>
                   </li>
                 </ul>
               </li>

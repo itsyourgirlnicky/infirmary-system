@@ -106,22 +106,48 @@ function validateConsultationForm() {
     const diagnosis = document.getElementById('diagnosis').value.trim();
     const treatmentPlan = document.getElementById('treatment_plan').value.trim();
 
-    if (consultationType === '') {
-        alert('Please select a consultation type.');
-        return false;
-    }
-    if (notes === '') {
-        alert('Please enter notes.');
-        return false;
-    }
-    if (diagnosis === '') {
-        alert('Please enter a diagnosis.');
-        return false;
-    }
-    if (treatmentPlan === '') {
-        alert('Please enter a treatment plan.');
+    if (!consultationType || !notes || !diagnosis || !treatmentPlan) {
+        alert('Please fill in all fields.');
         return false;
     }
 
+    alert('Test validation')
     return true;
+}
+
+//Lab Request Validation
+function validateLabRequestForm() {
+    let testName = document.getElementById('testName').value.trim();
+    let result = document.getElementById('result').value.trim();
+    let status = document.getElementById('status').value;
+
+    // Check if test name and status are filled
+    if (testName === '' || status === '') {
+        alert('Test name and status are required.');
+        return false;
+    }
+
+    // If updating, check if result is filled
+    let labRequestId = document.querySelector('input[name="lab_request_id"]').value;
+    if (labRequestId && result === '') {
+        alert('Result is required for updating.');
+        return false;
+    }
+
+    return true; // Allow form submission
+}
+
+//Prescription Form
+function validatePrescriptionForm() {
+    let medication = document.getElementById('medication').value.trim();
+    let dosage = document.getElementById('dosage').value.trim();
+    let duration = document.getElementById('duration').value.trim();
+
+    // Check if all fields are filled
+    if (medication === '' || dosage === '' || duration === '') {
+        alert('All fields are required.');
+        return false;
+    }
+
+    return true; // Allow form submission
 }

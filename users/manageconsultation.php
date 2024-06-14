@@ -8,7 +8,7 @@ include('config.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>manage Consultation</title>
+    <title>Manage Consultation</title>
     <link rel="stylesheet" href="managepatients.css">
 </head>
 <body>
@@ -58,8 +58,6 @@ include('config.php');
                                             <th>#</th>
                                             <th data-toggle="true">Patient Name</th>
                                             <th data-hide="phone">Patient ID</th>
-                                            <th data-hide="phone">Age</th>
-                                            <th data-hide="phone">Gender</th>
                                             <th data-hide="phone">Action</th>
                                         </tr>
                                     </thead>
@@ -76,10 +74,9 @@ include('config.php');
                                                 <td><?php echo $cnt; ?></td>
                                                 <td><?php echo $row->name; ?></td>
                                                 <td><?php echo $row->patient_id; ?></td>
-                                                <td><?php echo $row->age; ?> Years</td>
-                                                <td><?php echo $row->gender; ?></td>
                                                 <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Updates</a></td>
                                                 <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>lab Report</a></td>
+                                                <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>Prescription</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
