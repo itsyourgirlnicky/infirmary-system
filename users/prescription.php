@@ -2,78 +2,44 @@
 session_start();
 include('config.php');
 
-$err = ''; // Initialize error variable
-
-// Get patient_id and prescription_id from URL if set
-$patient_id = isset($_GET['patient_id']) ? $_GET['patient_id'] : null;
-$prescription_id = isset($_GET['prescription_id']) ? $_GET['prescription_id'] : null;
-
-if ($prescription_id) {
-    // Fetch existing prescription details for update
-    $query = "SELECT * FROM prescriptions WHERE prescription_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $prescription_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $prescription = $res->fetch_object();
-}
-
-// Fetch patient name
-$patient = null;
-if ($patient_id) {
-    $ret = "SELECT name FROM patients WHERE patient_id = ?";
-    $stmt = $mysqli->prepare($ret);
-    $stmt->bind_param('i', $patient_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $patient = $res->fetch_object();
-}
-
-// Fetch the latest consultation id for the patient
-$consultation_id = null;
-if ($patient_id) {
-    $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
-    $stmt_consultation = $mysqli->prepare($ret_consultation);
-    $stmt_consultation->bind_param('i', $patient_id);
-    $stmt_consultation->execute();
-    $res_consultation = $stmt_consultation->get_result();
-    $consultation = $res_consultation->fetch_object();
-    $consultation_id = $consultation ? $consultation->consultation_id : '';
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $prescription_id = isset($_POST['prescription_id']) ? $_POST['prescription_id'] : null;
+if (isset($_POST['add_prescription'])) {
     $consultation_id = $_POST['consultation_id'];
     $patient_id = $_POST['patient_id'];
-    $medication = trim($_POST['medication']);
-    $dosage = trim($_POST['dosage']);
-    $duration = trim($_POST['duration']);
+    $medications = $_POST['medication'];
+    $dosages = $_POST['dosage'];
+    $durations = $_POST['duration'];
     $created_at = date('Y-m-d H:i:s');
 
-    // Server-side validation
-    if (empty($medication) || empty($dosage) || empty($duration)) {
-        $err = "All fields are required.";
-    } else {
-        if ($prescription_id) {
-            // Update existing prescription
-            $query = "UPDATE prescriptions SET medication = ?, dosage = ?, duration = ? WHERE prescription_id = ?";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('sssi', $medication, $dosage, $duration, $prescription_id);
-        } else {
-            // Insert new prescription
-            $query = "INSERT INTO prescriptions (consultation_id, patient_id, medication, dosage, duration, created_at) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('iissss', $consultation_id, $patient_id, $medication, $dosage, $duration, $created_at);
-        }
+    foreach ($medications as $index => $medication) {
+        $dosage = $dosages[$index];
+        $duration = $durations[$index];
 
-        if ($stmt->execute()) {
-            header("Location: manageprescriptions.php");
-            exit();
-        } else {
+        $query = "INSERT INTO prescriptions (consultation_id, patient_id, medication, dosage, duration, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iissss', $consultation_id, $patient_id, $medication, $dosage, $duration, $created_at);
+
+        if (!$stmt->execute()) {
             $err = "Error: " . $stmt->error;
+            break;
         }
     }
+
+    if (!isset($err)) {
+        header("Location: manageprescriptions.php");
+        exit();
+    }
 }
+
+// Fetch patient ID and consultation ID from URL or session
+$patient_id = $_GET['patient_id'];
+$ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
+$stmt_consultation = $mysqli->prepare($ret_consultation);
+$stmt_consultation->bind_param('i', $patient_id);
+$stmt_consultation->execute();
+$res_consultation = $stmt_consultation->get_result();
+$consultation = $res_consultation->fetch_object();
+
+$consultation_id = $consultation ? $consultation->consultation_id : '';
 ?>
 
 <!DOCTYPE html>
@@ -81,8 +47,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $prescription_id ? 'Update' : 'Add'; ?> Prescription</title>
-    <link rel="stylesheet" href="consultation.css">
+    <title>Add Prescription</title>
+    <link rel="stylesheet" href="managepatients.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .add-row {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .remove-row {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="navbar">
@@ -92,32 +85,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </header>
 
     <div class="container">
-        <h2 class="header-title"><?php echo $prescription_id ? 'Update' : 'Add'; ?> Prescription</h2>
-        <?php if ($err) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form id="prescriptionForm" method="post" action="addprescription.php?patient_id=<?php echo $patient_id; ?><?php if ($prescription_id) echo '&prescription_id=' . $prescription_id; ?>" onsubmit="return validatePrescriptionForm()">
-            <input type="hidden" name="prescription_id" value="<?php echo htmlspecialchars($prescription_id); ?>">
-            <div class="form-group">
-                <label for="patientName">Patient Name</label>
-                <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name ?? ''); ?>" readonly>
-            </div>
-            <div class="form-group">
-                <label for="patientID">Patient ID</label>
-                <input type="text" id="patientID" name="patient_id" value="<?php echo $patient_id; ?>" readonly>
-            </div>
+        <h2 class="header-title">Add Prescription</h2>
+        <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
+        <form method="post" action="addprescription.php" onsubmit="return validatePrescriptionForm()">
             <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
-            <div class="form-group">
-                <label for="medication">Medication</label>
-                <textarea id="medication" name="medication" rows="4" required><?php echo htmlspecialchars($prescription->medication ?? ''); ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="dosage">Dosage</label>
-                <textarea id="dosage" name="dosage" rows="4" required><?php echo htmlspecialchars($prescription->dosage ?? ''); ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="duration">Duration</label>
-                <textarea id="duration" name="duration" rows="4" required><?php echo htmlspecialchars($prescription->duration ?? ''); ?></textarea>
-            </div>
-            <button type="submit" class="btn"><?php echo $prescription_id ? 'Update' : 'Save'; ?> Prescription</button>
+            <input type="hidden" id="patientID" name="patient_id" value="<?php echo htmlspecialchars($patient_id); ?>">
+            <table id="prescriptionTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Medication Name</th>
+                        <th>Dosage</th>
+                        <th>Duration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" name="medication[]" required></td>
+                        <td><input type="text" name="dosage[]" required></td>
+                        <td><input type="text" name="duration[]" required></td>
+                        <td><span class="remove-row" onclick="removeRow(this)">Remove</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="add-row" onclick="addRow()">Add Medication</div>
+            <button type="submit" class="btn">Save Prescription</button>
         </form>
     </div>
 
@@ -127,7 +121,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </footer>
 
-    <script src="validation.js"></script>
+    <script>
+        function addRow() {
+            const table = document.getElementById('prescriptionTable').getElementsByTagName('tbody')[0];
+            const rowCount = table.rows.length;
+            const row = table.insertRow(rowCount);
 
+            row.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td><input type="text" name="medication[]" required></td>
+                <td><input type="text" name="dosage[]" required></td>
+                <td><input type="text" name="duration[]" required></td>
+                <td><span class="remove-row" onclick="removeRow(this)">Remove</span></td>
+            `;
+        }
+
+        function removeRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateRowNumbers();
+        }
+
+        function updateRowNumbers() {
+            const table = document.getElementById('prescriptionTable').getElementsByTagName('tbody')[0];
+            for (let i = 0; i < table.rows.length; i++) {
+                table.rows[i].cells[0].innerText = i + 1;
+            }
+        }
+
+        function validatePrescriptionForm() {
+            // Add your validation logic here if needed
+            return true;
+        }
+    </script>
 </body>
 </html>
