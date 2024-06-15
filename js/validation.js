@@ -138,6 +138,7 @@ function validateLabRequestForm() {
 }
 
 //Prescription Form
+
 function validatePrescriptionForm() {
     let medication = document.getElementById('medication').value.trim();
     let dosage = document.getElementById('dosage').value.trim();

@@ -25,21 +25,33 @@ if (isset($_POST['add_prescription'])) {
     }
 
     if (!isset($err)) {
-        header("Location: manageprescriptions.php");
+        header("Location: consultation.php?patient_id=$patient_id");
         exit();
     }
 }
 
 // Fetch patient ID and consultation ID from URL or session
-$patient_id = $_GET['patient_id'];
-$ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
-$stmt_consultation = $mysqli->prepare($ret_consultation);
-$stmt_consultation->bind_param('i', $patient_id);
-$stmt_consultation->execute();
-$res_consultation = $stmt_consultation->get_result();
-$consultation = $res_consultation->fetch_object();
+$patient_id = $_GET['patient_id'] ?? null;
+if ($patient_id) {
+    $ret_patient = "SELECT name FROM patients WHERE patient_id = ?";
+    $stmt_patient = $mysqli->prepare($ret_patient);
+    $stmt_patient->bind_param('i', $patient_id);
+    $stmt_patient->execute();
+    $res_patient = $stmt_patient->get_result();
+    $patient = $res_patient->fetch_object();
 
-$consultation_id = $consultation ? $consultation->consultation_id : '';
+    $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
+    $stmt_consultation = $mysqli->prepare($ret_consultation);
+    $stmt_consultation->bind_param('i', $patient_id);
+    $stmt_consultation->execute();
+    $res_consultation = $stmt_consultation->get_result();
+    $consultation = $res_consultation->fetch_object();
+
+    $consultation_id = $consultation ? $consultation->consultation_id : '';
+} else {
+    echo "Patient ID is required.";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -85,9 +97,12 @@ $consultation_id = $consultation ? $consultation->consultation_id : '';
     </header>
 
     <div class="container">
-        <h2 class="header-title">Add Prescription</h2>
         <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form method="post" action="addprescription.php" onsubmit="return validatePrescriptionForm()">
+        <form method="post" action="consultation.php" onsubmit="return validatePrescriptionForm()">
+            <div>
+                <p><strong>Patient Name:</strong> <?php echo htmlspecialchars($patient->name); ?></p>
+                <p><strong>Patient ID:</strong> <?php echo htmlspecialchars($patient_id); ?></p>
+            </div>
             <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
             <input type="hidden" id="patientID" name="patient_id" value="<?php echo htmlspecialchars($patient_id); ?>">
             <table id="prescriptionTable">
@@ -111,7 +126,7 @@ $consultation_id = $consultation ? $consultation->consultation_id : '';
                 </tbody>
             </table>
             <div class="add-row" onclick="addRow()">Add Medication</div>
-            <button type="submit" class="btn">Save Prescription</button>
+            <button type="submit" class="btn" name="add_prescription">Save Prescription</button>
         </form>
     </div>
 
@@ -149,10 +164,7 @@ $consultation_id = $consultation ? $consultation->consultation_id : '';
             }
         }
 
-        function validatePrescriptionForm() {
-            // Add your validation logic here if needed
-            return true;
-        }
     </script>
+
 </body>
 </html>

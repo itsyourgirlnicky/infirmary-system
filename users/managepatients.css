@@ -56,7 +56,6 @@ body {
     color: #6c757d; /* Separator color */
 }
 
-
 .card-box {
     background: #fff;
     padding: 20px;
@@ -69,6 +68,11 @@ body {
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 20px;
+}
+
+.table-container {
+    max-height: calc(100vh - 160px); /* Adjust height to accommodate header and footer */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .table-responsive {
@@ -152,6 +156,10 @@ body {
     padding: 15px 20px;
     color: #ffc300;
     text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .navbar a {
@@ -176,7 +184,17 @@ body {
     color: #ffc300;
     text-align: center;
     padding: 10px 0;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+/* Main content page */
+.content-page {
+    padding-top: 70px; /* Height of the fixed header */
+    padding-bottom: 50px; /* Height of the fixed footer */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

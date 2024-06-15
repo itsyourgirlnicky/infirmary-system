@@ -8,7 +8,7 @@ include('config.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab Requests</title>
+    <title>Manage Lab Reports</title>
     <link rel="stylesheet" href="managepatients.css">
 </head>
 <body>
@@ -32,7 +32,7 @@ include('config.php');
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Laboratory</a></li>
-                                    <li class="breadcrumb-item active">Lab Requests</li>
+                                    <li class="breadcrumb-item active">Lab Reports</li>
                                 </ol>
                             </div>
                         </div>
@@ -43,10 +43,11 @@ include('config.php');
                 <div class="row">
                     <div class="col-12">
                         <div class="card-box">
-                            <h4 class="header-title">Laboratory Requests</h4>
+                            <h4 class="header-title">Lab Reports</h4>
                             <div class="mb-2">
                                 <div class="row">
                                     <div class="col-12 text-sm-center form-inline">
+                                        <!-- Optional search or filter -->
                                     </div>
                                 </div>
                             </div>
@@ -56,19 +57,19 @@ include('config.php');
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th data-toggle="true">Patient Name</th>
-                                            <th data-hide="phone">Patient ID</th>
-                                            <th data-hide="phone">Age</th>
-                                            <th data-hide="phone">Gender</th>
-                                            <th data-hide="phone">Action</th>
+                                            <th>Patient Name</th>
+                                            <th>Patient ID</th>
+                                            <th>Test Name</th>
+                                            <th>Result</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <?php
-                                    $ret = "SELECT p.*
-                                            FROM patients p
-                                            INNER JOIN vitals v ON p.patient_id = v.patient_id
-                                            INNER JOIN consultations c ON p.patient_id = c.patient_id
-                                            ORDER BY p.created_at ASC";
+                                    $ret = "SELECT lr.*, p.name AS patient_name
+                                            FROM labrequests lr
+                                            INNER JOIN patients p ON lr.patient_id = p.patient_id
+                                            ORDER BY lr.created_at DESC";
                                     $stmt = $mysqli->prepare($ret);
                                     $stmt->execute();
                                     $res = $stmt->get_result();
@@ -78,17 +79,24 @@ include('config.php');
                                         <tbody>
                                             <tr>
                                                 <td><?php echo $cnt; ?></td>
-                                                <td><?php echo $row->name; ?></td>
-                                                <td><?php echo $row->patient_id; ?></td>
-                                                <td><?php echo $row->age; ?> Years</td>
-                                                <td><?php echo $row->gender; ?></td>
-                                                <td><a href="viewlabrequests.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> View Lab Requests</a></td>
+                                                <td><?php echo htmlspecialchars($row->patient_name); ?></td>
+                                                <td><?php echo htmlspecialchars($row->patient_id); ?></td>
+                                                <td><?php echo htmlspecialchars($row->test_name); ?></td>
+                                                <td><?php echo htmlspecialchars($row->result); ?></td>
+                                                <td>
+                                                    <?php if($row->status == 'Pending') { ?>
+                                                        <span class="badge badge-warning">Pending</span>
+                                                    <?php } else { ?>
+                                                        <span class="badge badge-success">Completed</span>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><a href="view_lab_report.php?lab_request_id=<?php echo $row->lab_request_id; ?>" class="badge badge-primary"><i class="mdi mdi-eye-outline"></i> View</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
                                     <tfoot>
                                         <tr class="active">
-                                            <td colspan="8">
+                                            <td colspan="7">
                                                 <div class="text-right">
                                                     <ul class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0"></ul>
                                                 </div>

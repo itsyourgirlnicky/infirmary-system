@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <h2 class="header-title"><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</h2>
         <?php if ($err) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form id="labRequestForm" method="post" action="addlabrequest.php?patient_id=<?php echo $patient_id; ?><?php if ($lab_request_id) echo '&lab_request_id=' . $lab_request_id; ?>" onsubmit="return validateLabRequestForm()">
+        <form id="labRequestForm" method="post" action="consultation.php?patient_id=<?php echo $patient_id; ?><?php if ($lab_request_id) echo '&lab_request_id=' . $lab_request_id; ?>" onsubmit="return validateLabRequestForm()">
             <input type="hidden" name="lab_request_id" value="<?php echo htmlspecialchars($lab_request_id); ?>">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
