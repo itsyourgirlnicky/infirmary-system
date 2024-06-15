@@ -2,24 +2,9 @@
 session_start();
 include('config.php');
 
-$err = ''; // Initialize error variable
+$patient_id = $_GET['patient_id'];
+$err = '';
 
-// Get patient_id and lab_request_id from URL if set
-$patient_id = isset($_GET['patient_id']) ? $_GET['patient_id'] : null;
-$lab_request_id = isset($_GET['lab_request_id']) ? $_GET['lab_request_id'] : null;
-
-if ($lab_request_id) {
-    // Fetch existing lab request details for update
-    $query = "SELECT * FROM labrequests WHERE lab_request_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $lab_request_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $lab_request = $res->fetch_object();
-}
-
-// Fetch patient name
-$patient = null;
 if ($patient_id) {
     $ret = "SELECT name FROM patients WHERE patient_id = ?";
     $stmt = $mysqli->prepare($ret);
@@ -30,7 +15,6 @@ if ($patient_id) {
 }
 
 // Fetch the latest consultation id for the patient
-$consultation_id = null;
 if ($patient_id) {
     $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
     $stmt_consultation = $mysqli->prepare($ret_consultation);
@@ -41,51 +25,40 @@ if ($patient_id) {
     $consultation_id = $consultation ? $consultation->consultation_id : '';
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $lab_request_id = isset($_POST['lab_request_id']) ? $_POST['lab_request_id'] : null;
+if (isset($_POST["add_lab_request"])) {
     $consultation_id = $_POST['consultation_id'];
     $patient_id = $_POST['patient_id'];
+    $user_id = $_SESSION['user_id'];
     $test_name = trim($_POST['test_name']);
     $result = trim($_POST['result']);
     $status = trim($_POST['status']);
     $created_at = date('Y-m-d H:i:s');
 
-    // Server-side validation
     if (empty($test_name) || empty($status)) {
-        $err = "Test name and status are required.";
-    } elseif ($lab_request_id && empty($result)) {
-        $err = "Result is required for updating.";
+        $err = "Fill all fields";
     } else {
-        if ($lab_request_id) {
-            // Update existing lab request
-            $query = "UPDATE labrequests SET test_name = ?, result = ?, status = ? WHERE lab_request_id = ?";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('sssi', $test_name, $result, $status, $lab_request_id);
-        } else {
-            // Insert new lab request
-            $query = "INSERT INTO labrequests (consultation_id, patient_id, test_name, result, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('iissss', $consultation_id, $patient_id, $test_name, $result, $status, $created_at);
-        }
-
+        $query = "INSERT INTO labrequests (consultation_id, patient_id, test_name, result, status, created_at) VALUES (?,?,?,?,?,?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iissss', $consultation_id, $patient_id, $test_name, $result, $status, $created_at);
+        
         if ($stmt->execute()) {
-            header("Location: consultation.php?patient_id=$patient_id");
-            exit();
-        } else {
-            $err = "Error: " . $stmt->error;
+            header('location: consultation.php');
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</title>
     <link rel="stylesheet" href="consultation.css">
 </head>
+
 <body>
     <header class="navbar">
         <div class="container text-center">
@@ -94,9 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </header>
 
     <div class="container">
-        <h2 class="header-title"><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</h2>
-        <?php if ($err) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form id="labRequestForm" method="post" action="consultation.php?patient_id=<?php echo $patient_id; ?><?php if ($lab_request_id) echo '&lab_request_id=' . $lab_request_id; ?>" onsubmit="return validateLabRequestForm()">
+        <h2 class="header-title">Lab Request</h2>
+        <?php if ($err) {
+            echo "<div style='color: red;'>$err</div>";
+        } ?>
+        <form method="post" onsubmit="return validateLabRequestForm()">
             <input type="hidden" name="lab_request_id" value="<?php echo htmlspecialchars($lab_request_id); ?>">
             <div class="form-group">
                 <label for="patientName">Patient Name</label>
@@ -109,20 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
             <div class="form-group">
                 <label for="testName">Test Name</label>
-                <input type="text" id="testName" name="test_name" value="<?php echo htmlspecialchars($lab_request->test_name ?? ''); ?>" required>
+                <input type="text" id="test_name" name="test_name" value="<?php echo htmlspecialchars($patient->test_name ?? ''); ?>" required>
             </div>
             <div class="form-group">
                 <label for="result">Result</label>
-                <textarea id="result" name="result" rows="4"><?php echo htmlspecialchars($lab_request->result ?? ''); ?></textarea>
+                <textarea id="result" name="result" rows="4"><?php echo htmlspecialchars($patient->result ?? ''); ?></textarea>
             </div>
             <div class="form-group">
                 <label for="status">Status</label>
                 <select id="status" name="status" required>
-                    <option value="pending" <?php if (isset($lab_request->status) && $lab_request->status == 'pending') echo 'selected'; ?>>Pending</option>
-                    <option value="completed" <?php if (isset($lab_request->status) && $lab_request->status == 'completed') echo 'selected'; ?>>Completed</option>
+                    <option value="pending" <?php if (isset($patient->status) && $patient->status == 'pending') echo 'selected'; ?>>Pending</option>
+                    <option value="completed" <?php if (isset($patient->status) && $patient->status == 'completed') echo 'selected'; ?>>Completed</option>
                 </select>
             </div>
-            <button type="submit" class="btn"><?php echo $lab_request_id ? 'Update' : 'Save'; ?> Lab Request</button>
+            <button type="submit" name="add_lab_request" class="btn"> Lab Request</button>
         </form>
     </div>
 
@@ -134,4 +109,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="validation.js"></script>
 </body>
+
 </html>
