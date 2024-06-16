@@ -2,6 +2,28 @@
 session_start();
 include('config.php');
 
+$patient_id = $_GET['patient_id'];
+if ($patient_id) {
+    $ret_patient = "SELECT name FROM patients WHERE patient_id = ?";
+    $stmt_patient = $mysqli->prepare($ret_patient);
+    $stmt_patient->bind_param('i', $patient_id);
+    $stmt_patient->execute();
+    $res_patient = $stmt_patient->get_result();
+    $patient = $res_patient->fetch_object();
+
+    $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
+    $stmt_consultation = $mysqli->prepare($ret_consultation);
+    $stmt_consultation->bind_param('i', $patient_id);
+    $stmt_consultation->execute();
+    $res_consultation = $stmt_consultation->get_result();
+    $consultation = $res_consultation->fetch_object();
+
+    $consultation_id = $consultation ? $consultation->consultation_id : '';
+} else {
+    echo "Patient ID is required.";
+    exit();
+}
+
 if (isset($_POST['add_prescription'])) {
     $consultation_id = $_POST['consultation_id'];
     $patient_id = $_POST['patient_id'];
@@ -30,28 +52,6 @@ if (isset($_POST['add_prescription'])) {
     }
 }
 
-// Fetch patient ID and consultation ID from URL or session
-$patient_id = $_GET['patient_id'] ?? null;
-if ($patient_id) {
-    $ret_patient = "SELECT name FROM patients WHERE patient_id = ?";
-    $stmt_patient = $mysqli->prepare($ret_patient);
-    $stmt_patient->bind_param('i', $patient_id);
-    $stmt_patient->execute();
-    $res_patient = $stmt_patient->get_result();
-    $patient = $res_patient->fetch_object();
-
-    $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
-    $stmt_consultation = $mysqli->prepare($ret_consultation);
-    $stmt_consultation->bind_param('i', $patient_id);
-    $stmt_consultation->execute();
-    $res_consultation = $stmt_consultation->get_result();
-    $consultation = $res_consultation->fetch_object();
-
-    $consultation_id = $consultation ? $consultation->consultation_id : '';
-} else {
-    echo "Patient ID is required.";
-    exit();
-}
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +98,7 @@ if ($patient_id) {
 
     <div class="container">
         <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form method="post" action="consultation.php" onsubmit="return validatePrescriptionForm()">
+        <form method="post" onsubmit="return validatePrescriptionForm()">
             <div>
                 <p><strong>Patient Name:</strong> <?php echo htmlspecialchars($patient->name); ?></p>
                 <p><strong>Patient ID:</strong> <?php echo htmlspecialchars($patient_id); ?></p>

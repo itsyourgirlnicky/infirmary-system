@@ -75,7 +75,7 @@ include('config.php');
                                                 <td><?php echo $row->name; ?></td>
                                                 <td><?php echo $row->patient_id; ?></td>
                                                 <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Updates</a></td>
-                                                <td><a href=".php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>lab Report</a></td>
+                                                <td><a href="labreport.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>lab Report</a></td>
                                                 <td><a href="prescription.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i>Prescription</a></td>
                                             </tr>
                                         </tbody>

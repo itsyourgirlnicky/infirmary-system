@@ -84,13 +84,13 @@ include('config.php');
                                                 <td><?php echo htmlspecialchars($row->test_name); ?></td>
                                                 <td><?php echo htmlspecialchars($row->result); ?></td>
                                                 <td>
-                                                    <?php if($row->status == 'Pending') { ?>
+                                                    <?php if($row->status == 'pending') { ?>
                                                         <span class="badge badge-warning">Pending</span>
                                                     <?php } else { ?>
                                                         <span class="badge badge-success">Completed</span>
                                                     <?php } ?>
                                                 </td>
-                                                <td><a href="view_lab_report.php?lab_request_id=<?php echo $row->lab_request_id; ?>" class="badge badge-primary"><i class="mdi mdi-eye-outline"></i> View</a></td>
+                                                <td><a href="labreports.php?lab_request_id=<?php echo $row->lab_request_id; ?>" class="badge badge-primary"><i class="mdi mdi-eye-outline"></i> Update</a></td>
                                             </tr>
                                         </tbody>
                                     <?php $cnt = $cnt + 1; } ?>
