@@ -36,7 +36,7 @@ if (isset($_GET['patient_id'])) {
         <div class="breadcrumb">
             <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
             <div class="breadcrumb-item"><a href="manage_patients.php">Manage Patients</a></div>
-            <div class="breadcrumb-item active">View Patient</div>
+            <div class="breadcrumb-item active">Patient Details</div>
         </div>
     </div>
 

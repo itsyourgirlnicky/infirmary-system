@@ -32,7 +32,7 @@ include('config.php');
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Triage</a></li>
-                                    <li class="breadcrumb-item active">Capture VItals</li>
+                                    <li class="breadcrumb-item active">Capture Vitals</li>
                                 </ol>
                             </div>
                         </div>
@@ -66,7 +66,7 @@ include('config.php');
                                             FROM patients p
                                             LEFT JOIN vitals v ON p.patient_id = v.patient_id
                                             WHERE v.patient_id IS NULL
-                                            ORDER BY p.created_at DESC";
+                                            ORDER BY p.created_at ASC";
                                     $stmt = $mysqli->prepare($ret);
                                     $stmt->execute();
                                     $res = $stmt->get_result();
@@ -76,8 +76,8 @@ include('config.php');
                                         <tbody>
                                             <tr>
                                                 <td><?php echo $cnt; ?></td>
-                                                <td><?php echo $row->name; ?></td>
-                                                <td><?php echo $row->patient_id; ?></td>
+                                                <td><?php echo htmlspecialchars($row->name); ?></td>
+                                                <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                                 <td><a href="capturevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a></td>
                                             </tr>
                                         </tbody>

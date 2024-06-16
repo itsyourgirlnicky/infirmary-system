@@ -9,24 +9,31 @@ if (isset($_POST['add_patient'])) {
     $contact_number = trim($_POST['contact_number']);
     $student_employee_number = trim($_POST['student_employee_number']);
     $address = trim($_POST['address']);
-
-    // Server-side validation
-    if (empty($name) || empty($age) || empty($gender) || empty($contact_number) || empty($student_employee_number) || empty($address)) {
-        $err = "All fields are required.";
-    } elseif (!is_numeric($age) || $age <= 0) {
-        $err = "Invalid age.";
-    } elseif (!is_numeric($contact_number)) {
-        $err = "Invalid contact number.";
+    
+    // Get user ID from the session
+    if (!isset($_SESSION['user_id'])) {
+        $err = "User ID not found. Please log in again.";
     } else {
-        // Insert the new patient into the database
-        $stmt = $mysqli->prepare("INSERT INTO patients (name, age, gender, contact_number, student_employee_number, address, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param('sissss', $name, $age, $gender, $contact_number, $student_employee_number, $address);
-        if ($stmt->execute()) {
-            $success = "Patient added successfully";
-            header("Location: dashboard.php");
-            exit();
+        $user_id = $_SESSION['user_id'];
+
+        // Server-side validation
+        if (empty($name) || empty($age) || empty($gender) || empty($contact_number) || empty($student_employee_number) || empty($address)) {
+            $err = "All fields are required.";
+        } elseif (!is_numeric($age) || $age <= 0) {
+            $err = "Invalid age.";
+        } elseif (!is_numeric($contact_number)) {
+            $err = "Invalid contact number.";
         } else {
-            $err = "Please try again.";
+            // Insert the new patient into the database
+            $stmt = $mysqli->prepare("INSERT INTO patients (user_id, name, age, gender, contact_number, student_employee_number, address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->bind_param('isissss', $user_id, $name, $age, $gender, $contact_number, $student_employee_number, $address);
+            if ($stmt->execute()) {
+                $success = "Patient added successfully";
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                $err = "Please try again.";
+            }
         }
     }
 }

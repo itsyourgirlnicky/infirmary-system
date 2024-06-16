@@ -42,7 +42,7 @@ include('config.php');
                                 <div class="row">
                                     <div class="col-12 text-sm-center form-inline">
                                         <div class="form-group mr-2">
-                                        <h4 class="page-title">Manage Patient Vitals</h4>
+                                            <h4 class="page-title">Manage Patient Vitals</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -53,18 +53,17 @@ include('config.php');
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Patient ID</th>
                                             <th>Patient Name</th>
-                                            <th>Temperature</th>
-                                            <th>Blood Pressure</th>
-                                            <th>Weight</th>
-                                            <th>Height</th>
-                                            <th>Visit Date</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT vitals.*, patients.name FROM vitals JOIN patients ON vitals.patient_id = patients.patient_id ORDER BY visit_date DESC";
+                                        $query = "SELECT vitals.patient_id, patients.name 
+                                                  FROM vitals 
+                                                  JOIN patients ON vitals.patient_id = patients.patient_id 
+                                                  ORDER BY patients.patient_id ASC";
                                         $stmt = $mysqli->prepare($query);
                                         $stmt->execute();
                                         $res = $stmt->get_result();
@@ -73,12 +72,8 @@ include('config.php');
                                         ?>
                                             <tr>
                                                 <td><?php echo $cnt; ?></td>
+                                                <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                                 <td><?php echo htmlspecialchars($row->name); ?></td>
-                                                <td><?php echo htmlspecialchars($row->temperature); ?></td>
-                                                <td><?php echo htmlspecialchars($row->blood_pressure); ?></td>
-                                                <td><?php echo htmlspecialchars($row->weight); ?></td>
-                                                <td><?php echo htmlspecialchars($row->height); ?></td>
-                                                <td><?php echo htmlspecialchars($row->visit_date); ?></td>
                                                 <td>
                                                     <a href="updatevitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
                                                 </td>
@@ -87,7 +82,7 @@ include('config.php');
                                     </tbody>
                                     <tfoot>
                                         <tr class="active">
-                                            <td colspan="8">
+                                            <td colspan="4">
                                                 <div class="text-right">
                                                     <ul class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0"></ul>
                                                 </div>
@@ -103,9 +98,9 @@ include('config.php');
         </div> <!-- content -->
     </div>
     <footer class="footer">
-            <div class="container">
-                <p style="margin: 0;">&copy; 2024 Catholic University of Eastern Africa</p>
-            </div>
-        </footer>
+        <div class="container">
+            <p style="margin: 0;">&copy; 2024 Catholic University of Eastern Africa</p>
+        </div>
+    </footer>
 </body>
 </html>
