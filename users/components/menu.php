@@ -21,7 +21,7 @@
                     <a href="add_patient.php"><i class="ion-ios-color-filter-outline"></i>Add Patient Details</a>
                   </li>
                   <li>
-                    <a href="manage_patients.php"><i class="ion-ios-clock-outline"></i>Manage Patients</a>
+                    <a href="manage_patients.php"><i class="ion-ios-clock-outline"></i>Manage Patient Registration</a>
                   </li>
                 </ul>
               </li>
@@ -66,26 +66,6 @@
                   </li>
                   <li>
                     <a href="#"><i class="ion-ios-information-outline"></i>Manage Prescriptions</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#"><i class="ion-ios-navigate-outline"></i> <span class="">Inventory</span></a>
-                <ul class="nav-flyout">
-                  <li>
-                    <a href="#"><i class="ion-ios-flame-outline"></i>Burn</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-lightbulb-outline"></i>Bulbs</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-location-outline"></i>Where You</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-locked-outline"></i>On Lock</a>
-                  </li>
-                   <li>
-                    <a href="#"><i class="ion-ios-navigate-outline"></i>Ghostface</a>
                   </li>
                 </ul>
               </li>

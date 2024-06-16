@@ -57,7 +57,7 @@ if (isset($_POST['add_patient'])) {
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Patients</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Patient Registration</a></li>
                         <li class="breadcrumb-item active">Add Patient</li>
                     </ol>
                 </div>

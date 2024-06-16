@@ -102,11 +102,10 @@ include('config.php');
             </div> <!-- container -->
         </div> <!-- content -->
     </div>
-
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Catholic University of Eastern Africa</p>
-        </div>
-    </footer>
+            <div class="container">
+                <p style="margin: 0;">&copy; 2024 Catholic University of Eastern Africa</p>
+            </div>
+        </footer>
 </body>
 </html>

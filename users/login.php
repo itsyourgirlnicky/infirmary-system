@@ -1,15 +1,15 @@
 <?php
 session_start();
 include('config.php');
+
 if (isset($_POST['user_login'])) {
     $username = trim($_POST['username']);
-    $password = sha1(md5(trim($_POST['password']))); //double encryption
+    $password = sha1(md5(trim($_POST['password']))); // Double encryption
 
     // Server-side validation
     if (empty($username) || empty($password)) {
         $err = "All fields are required.";
     } else {
-
         // SQL to validate user credentials
         $stmt = $mysqli->prepare("SELECT user_id FROM users WHERE username=? AND password=?");
         $stmt->bind_param('ss', $username, $password);
@@ -19,7 +19,7 @@ if (isset($_POST['user_login'])) {
 
         if ($rs) {
             $_SESSION['user_id'] = $user_id;
-            header("location:dashboard.php");
+            header("location:profile.php");
             exit();
         } else {
             $err = "Invalid username or password.";
@@ -27,22 +27,19 @@ if (isset($_POST['user_login'])) {
         $stmt->close();
     }
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS-->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="./users.css">
 </head>
-
 <body class="login_body">
     <header style="background-color: #800000; color: #ffc300; padding: 10px;">
         <div class="container text-center">
@@ -50,7 +47,7 @@ if (isset($_POST['user_login'])) {
         </div>
     </header>
 
-    <!-- Login form content here -->
+    <!-- Login form content -->
     <div class="login_form_wrapper">
         <form id="loginForm" method="post" onsubmit="return loginValidation()">
             <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
@@ -61,7 +58,7 @@ if (isset($_POST['user_login'])) {
             <button type="submit" name="user_login">Login</button>
         </form>
         <div class="options">
-            <p><a href="register.php">Register</a> | <a href="forgot_password.php">Forgot your password?</a></p>
+            <p><a href="register.php">Register</a></p>
         </div>
     </div>
 
@@ -72,5 +69,4 @@ if (isset($_POST['user_login'])) {
         <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
     </div>
 </footer>
-
 </html>

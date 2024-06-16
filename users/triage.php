@@ -32,7 +32,7 @@ include('config.php');
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Triage</a></li>
-                                    <li class="breadcrumb-item active">Records</li>
+                                    <li class="breadcrumb-item active">Capture VItals</li>
                                 </ol>
                             </div>
                         </div>
@@ -58,8 +58,6 @@ include('config.php');
                                             <th>#</th>
                                             <th data-toggle="true">Patient Name</th>
                                             <th data-hide="phone">Patient ID</th>
-                                            <th data-hide="phone">Age</th>
-                                            <th data-hide="phone">Gender</th>
                                             <th data-hide="phone">Action</th>
                                         </tr>
                                     </thead>
@@ -80,8 +78,6 @@ include('config.php');
                                                 <td><?php echo $cnt; ?></td>
                                                 <td><?php echo $row->name; ?></td>
                                                 <td><?php echo $row->patient_id; ?></td>
-                                                <td><?php echo $row->age; ?> Years</td>
-                                                <td><?php echo $row->gender; ?></td>
                                                 <td><a href="capturevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a></td>
                                             </tr>
                                         </tbody>
