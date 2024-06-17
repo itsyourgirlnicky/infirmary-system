@@ -2,25 +2,26 @@
 session_start();
 include('config.php');
 
-// Check if the vital_id is set in the GET request
-if (isset($_GET['vital_id'])) {
-    $vital_id = intval($_GET['vital_id']);
+// Check if the patient_id is set in the GET request
+if (isset($_GET['patient_id'])) {
+    $patient_id = intval($_GET['patient_id']);
     
-    // Fetch vital details
-    $query = "SELECT * FROM vitals WHERE vital_id = ?";
+    // Fetch the latest vital details for the patient
+    $query = "SELECT * FROM vitals WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $vital_id);
+    $stmt->bind_param('i', $patient_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $vitals = $result->fetch_object();
 
     if (!$vitals) {
-        // Handle the case where the vital record is not found
-        echo "Vital record not found.";
+        // Handle the case where no vital record is found for the patient
+        echo "No vital records found for Patient ID: " . htmlspecialchars($patient_id);
         exit();
     }
 } else {
-    // Handle the case where vital_id is not set
+    // Handle the case where patient_id is not set
+    echo "Patient ID not set.";
     header("Location: triage.php");
     exit();
 }
@@ -35,15 +36,15 @@ if (isset($_POST['update_vitals'])) {
     // SQL to update vital details
     $query = "UPDATE vitals SET temperature = ?, blood_pressure = ?, weight = ?, height = ? WHERE vital_id = ?";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('dssdi', $temperature, $blood_pressure, $weight, $height, $vital_id);
+    $stmt->bind_param('dssdi', $temperature, $blood_pressure, $weight, $height, $vitals->vital_id);
     $stmt->execute();
 
-    if ($stmt) {
+    if ($stmt->affected_rows > 0) {
         $success = "Patient vitals updated successfully";
         header("Location: managevitals.php");
         exit();
     } else {
-        $err = "Please try again later";
+        $err = "No changes were made to the patient vitals.";
     }
 }
 ?>

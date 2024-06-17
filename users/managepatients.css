@@ -22,6 +22,21 @@ body {
     align-items: center;
 }
 
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    padding: 0 8px;
+    color: #6c757d;
+}
+
+.breadcrumb-item a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
 /* Card Box */
 .card-box {
     background-color: #fff;

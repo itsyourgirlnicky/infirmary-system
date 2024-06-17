@@ -19,7 +19,7 @@ if (isset($_POST['user_login'])) {
 
         if ($rs) {
             $_SESSION['user_id'] = $user_id;
-            header("location:profile.php");
+            header("location:dashboard.php");
             exit();
         } else {
             $err = "Invalid username or password.";
