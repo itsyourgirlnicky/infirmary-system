@@ -12,7 +12,7 @@
             <ul>
                 <li><a href="landingpage.php">Home</a></li>
                 <li><a href="./users/login.php">Login</a></li>
-                <li><a href="./users/admin_login.php">Administrator Login</a></li>
+                <li><a href="./Admin/admin_login.php">Administrator Login</a></li>
             </ul>
         </nav>
     </header>

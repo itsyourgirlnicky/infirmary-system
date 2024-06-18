@@ -44,7 +44,7 @@ include('config.php');
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT vitals.patient_id, patients.name 
+                            $query = "SELECT vitals.vital_id, vitals.patient_id, patients.name 
                                       FROM vitals 
                                       JOIN patients ON vitals.patient_id = patients.patient_id 
                                       ORDER BY patients.patient_id ASC";
@@ -59,8 +59,8 @@ include('config.php');
                                     <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                     <td><?php echo htmlspecialchars($row->name); ?></td>
                                     <td>
-                                        <a href="updatevitals.php?vital_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
-                                        <a href="view_vitals.php?vital_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> View</a>
+                                        <a href="updatevitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
+                                        <a href="viewvitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> View</a>
                                     </td>
                                 </tr>
                             <?php $cnt++; } ?>
