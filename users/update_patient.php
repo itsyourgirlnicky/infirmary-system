@@ -1,4 +1,4 @@
-<<?php
+<?php
 session_start();
 include('config.php');
 
@@ -33,29 +33,29 @@ if (isset($_POST['update_patient'])) {
     if ($stmt) {
         $success = "Patient details updated successfully";
         header("Location: manage_patients.php");
+        exit();
     } else {
         $err = "Please try again later";
     }
-    $stmt->close();
 }
 
 // Send patient record to triage
 if (isset($_POST['send_to_triage'])) {
-    $height = $_POST['height'];
-    $weight = $_POST['weight'];
-    $temperature = $_POST['temperature'];
-    $blood_pressure = $_POST['blood_pressure'];
-    $user_id = $_SESSION['user_id'];
-    $visit_date = date('Y-m-d'); // Use the current date as the visit date
-
-
+    $patient_id = $_POST['patient_id'];
+    
+    // Insert into a vitals or triage table
+    $query = "INSERT INTO vitals (patient_id, status) VALUES (?, 'pending')";
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param('i', $patient_id);
+    $stmt->execute();
+    
     if ($stmt) {
         $success = "Patient record sent to triage successfully";
         header("Location: manage_patients.php");
+        exit();
     } else {
         $err = "Please try again later";
     }
-    $stmt->close();
 }
 ?>
 
@@ -124,9 +124,12 @@ if (isset($_POST['send_to_triage'])) {
                 </div>
             </div>
 
-
-
             <button type="submit" name="update_patient" class="btn btn-success">Update Patient</button>
+        </form>
+
+        <!-- Form for sending to triage -->
+        <form method="post" action="update_patient.php">
+            <input type="hidden" name="patient_id" value="<?php echo $patient_id; ?>">
             <button type="submit" name="send_to_triage" class="btn btn-primary">Send to Triage</button>
         </form>
     </div>

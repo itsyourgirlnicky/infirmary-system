@@ -30,23 +30,27 @@ include('config.php');
             </div>
 
             <div class="card-box">
-                <h4 class="header-title">Patient Records</h4>
-                <div class="table-container">
-                    <table id="demo-foo-filtering" class="table table-bordered toggle-circle mb-0" data-page-size="7">
+                <h4 class="header-title">Patients Vitals</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered toggle-circle mb-0" data-page-size="7">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th data-toggle="true">Patient Name</th>
-                                <th data-hide="phone">Patient ID</th>
-                                <th data-hide="phone">Action</th>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $ret = "SELECT p.* 
-                                    FROM patients p
-                                    LEFT JOIN vitals v ON p.patient_id = v.patient_id
-                                    WHERE v.patient_id IS NULL
+                            // Fetch patients who do not have a 'completed' status in vitals
+                            $ret = "SELECT p.patient_id, p.name 
+                                    FROM patients p 
+                                    WHERE NOT EXISTS (
+                                        SELECT 1 FROM vitals v 
+                                        WHERE v.patient_id = p.patient_id 
+                                        AND v.status = 'completed'
+                                    )
                                     ORDER BY p.created_at ASC";
                             $stmt = $mysqli->prepare($ret);
                             $stmt->execute();
@@ -56,11 +60,9 @@ include('config.php');
                             ?>
                                 <tr>
                                     <td><?php echo $cnt; ?></td>
-                                    <td><?php echo htmlspecialchars($row->name); ?></td>
                                     <td><?php echo htmlspecialchars($row->patient_id); ?></td>
-                                    <td>
-                                        <a href="capturevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Capture Vitals</a>
-                                    </td>
+                                    <td><?php echo htmlspecialchars($row->name); ?></td>
+                                    <td><a href="capturevitals.php?patient_id=<?php echo htmlspecialchars($row->patient_id); ?>" class="badge badge-primary"><i class="mdi mdi-hospital-box"></i> Capture Vitals</a></td>
                                 </tr>
                             <?php $cnt++; } ?>
                         </tbody>
@@ -74,11 +76,11 @@ include('config.php');
                             </tr>
                         </tfoot>
                     </table>
-                </div> 
-            </div>
-        </div>
-    </div>
-</div>
+                </div> <!-- end .table-responsive-->
+            </div> <!-- end card-box -->
+        </div> <!-- content -->
+    </div> <!-- content-page -->
+</div> <!-- container -->
 
 <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
     <div style="text-align: center;">
