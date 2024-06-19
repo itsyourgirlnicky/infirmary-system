@@ -61,20 +61,8 @@ if (isset($_POST['add_prescription'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Prescription</title>
     <link rel="stylesheet" href="managepatients.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
         .add-row {
             background-color: #4CAF50;
             color: white;
@@ -90,49 +78,66 @@ if (isset($_POST['add_prescription'])) {
     </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="container text-center">
-            <h1 style="margin: 0; font-size: 24px; color: #ffc300;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
+    <header style="background-color: #800000; color: #ffc300; padding: 10px;">
+        <div class="container text-center" style="text-align: center;">
+            <h1 style="font-size: 24px;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
         </div>
     </header>
 
     <div class="container">
-        <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form method="post" onsubmit="return validatePrescriptionForm()">
-            <div>
-                <p><strong>Patient Name:</strong> <?php echo htmlspecialchars($patient->name); ?></p>
-                <p><strong>Patient ID:</strong> <?php echo htmlspecialchars($patient_id); ?></p>
+        <div class="content-page">
+            <div class="content">
+                <div class="page-title-box">
+                    <div class="breadcrumb">
+                        <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
+                        <div class="breadcrumb-item"><a href="consultation.php">Consultation</a></div>
+                        <div class="breadcrumb-item active">Add Prescription</div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h4 class="header-title">Add Prescription</h4>
+                    <div class="table-container">
+                        <?php if (isset($err)) { echo "<div style='color: red;'>$err</div>"; } ?>
+                        <form method="post" onsubmit="return validatePrescriptionForm()">
+                            <div>
+                                <p><strong>Patient Name:</strong> <?php echo htmlspecialchars($patient->name); ?></p>
+                                <p><strong>Patient ID:</strong> <?php echo htmlspecialchars($patient_id); ?></p>
+                            </div>
+                            <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
+                            <input type="hidden" id="patientID" name="patient_id" value="<?php echo htmlspecialchars($patient_id); ?>">
+                            <table class="table table-bordered" id="prescriptionTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Medication Name</th>
+                                        <th>Dosage</th>
+                                        <th>Duration</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td><input type="text" name="medication[]" class="form-control" required></td>
+                                        <td><input type="text" name="dosage[]" class="form-control" required></td>
+                                        <td><input type="text" name="duration[]" class="form-control" required></td>
+                                        <td><span class="remove-row" onclick="removeRow(this)">Remove</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="add-row" onclick="addRow()">Add Medication</div>
+                            <button type="submit" class="btn btn-primary" name="add_prescription">Save Prescription</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
-            <input type="hidden" id="patientID" name="patient_id" value="<?php echo htmlspecialchars($patient_id); ?>">
-            <table id="prescriptionTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Medication Name</th>
-                        <th>Dosage</th>
-                        <th>Duration</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><input type="text" name="medication[]" required></td>
-                        <td><input type="text" name="dosage[]" required></td>
-                        <td><input type="text" name="duration[]" required></td>
-                        <td><span class="remove-row" onclick="removeRow(this)">Remove</span></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="add-row" onclick="addRow()">Add Medication</div>
-            <button type="submit" class="btn" name="add_prescription">Save Prescription</button>
-        </form>
+        </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Catholic University of Eastern Africa</p>
+    <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
+        <div style="text-align: center;">
+            <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
 
@@ -144,9 +149,9 @@ if (isset($_POST['add_prescription'])) {
 
             row.innerHTML = `
                 <td>${rowCount + 1}</td>
-                <td><input type="text" name="medication[]" required></td>
-                <td><input type="text" name="dosage[]" required></td>
-                <td><input type="text" name="duration[]" required></td>
+                <td><input type="text" name="medication[]" class="form-control" required></td>
+                <td><input type="text" name="dosage[]" class="form-control" required></td>
+                <td><input type="text" name="duration[]" class="form-control" required></td>
                 <td><span class="remove-row" onclick="removeRow(this)">Remove</span></td>
             `;
         }

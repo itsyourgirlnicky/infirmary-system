@@ -45,6 +45,9 @@
                   <li>
                     <a href="manageconsultation.php"><i class="ion-ios-lightbulb-outline"></i>Manage Consultation</a>
                   </li>
+                  <li>
+                    <a href="consultationrecords.php"><i class="ion-ios-lightbulb-outline"></i>Consultation Records</a>
+                  </li>
                 </ul>
               </li>
               <li>
@@ -54,7 +57,7 @@
                     <a href="managelabrequest.php"><i class="ion-ios-timer-outline"></i>Lab Requests</a>
                   </li>
                   <li>
-                    <a href="managelabreports.php"><i class="ion-arrow-graph-down-left"></i>Lab Report</a>
+                    <a href="managelabreports.php"><i class="ion-arrow-graph-down-left"></i>Lab Reports</a>
                   </li>
                 </ul>
               </li>

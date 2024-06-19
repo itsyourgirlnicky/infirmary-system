@@ -76,3 +76,23 @@ body {
     left: 0;
     width: 100%;
 }
+
+.navbar {
+    background-color: #800000;
+    color: #ffc300;
+    padding: 10px 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navbar h1 {
+    font-size: 24px;
+    margin: 0;
+    color: #ffc300;
+    text-align: center;
+}
+
