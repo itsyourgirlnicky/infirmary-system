@@ -1,0 +1,268 @@
+body {
+  background-image: url("../images/user.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.dashboard_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: max-content !important;
+}
+
+.dashboard_image_wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+  height: 300px;
+  border-radius: 20px;
+  width: 50%;
+  background-color: white;
+
+  img {
+    height: 150px;
+    width: 100%;
+    object-fit: contain;
+  }
+
+  p {
+    margin-top: 2rem !important;
+    text-transform: capitalize;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  span {
+    margin-top: 0;
+    font-size: 20px;
+    font-weight: 500;
+    text-decoration: underline;
+    margin-top: 1rem !important;
+  }
+}
+
+/* Side menu css */
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600");
+
+body {
+  font-family: "Lato", sans-serif;
+  font-size: 100%;
+  overflow-y: scroll;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: #fefefe;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  transition: all 0.6s ease;
+}
+
+a:hover {
+  transition: all 0.6s ease;
+}
+
+.app {
+  height: 100vh;
+}
+
+/* -------------
+Sidebar
+----------------*/
+.sidebar {
+  position: absolute;
+  width: 17em;
+  height: 100%;
+  top: 0;
+  overflow: hidden;
+  background-color: #19222a;
+  -webkit-transform: translateZ(0);
+  visibility: visible;
+  -webkit-backface-visibility: hidden;
+}
+
+.sidebar header {
+  background-color: #FFFFE0;
+  width: 100%;
+  display: block;
+  padding: 0.75em 1em;
+}
+
+/* -------------
+Sidebar Nav
+----------------*/
+.sidebar-nav {
+  position: fixed;
+  background-color: #19222a;
+  height: 100%;
+  font-weight: 400;
+  font-size: 1.2em;
+  overflow: hidden;
+  padding-bottom: 6em;
+  z-index: 9;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav ul li {
+  margin-left: 0;
+  padding-left: 0;
+  display: inline-block;
+  width: 100%;
+}
+
+.sidebar-nav ul li a {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.75em;
+  padding: 1.05em 1em;
+  position: relative;
+  display: block;
+}
+
+.sidebar-nav ul li a:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transition: all 0.6s ease;
+}
+
+/* -------------
+Sidebar: icons
+----------------*/
+.sidebar-nav ul li i {
+  font-size: 1.8em;
+  padding-right: 0.5em;
+  width: 9em;
+  display: inline;
+  vertical-align: middle;
+}
+
+/* -------------
+Chev elements
+----------------*/
+.sidebar-nav > ul > li > a:after {
+  content: "\f125";
+  font-family: ionicons;
+  font-size: 0.5em;
+  width: 10px;
+  color: #fff;
+  position: absolute;
+  right: 0.75em;
+  top: 45%;
+}
+
+/* -------------
+Nav-Flyout
+----------------*/
+.sidebar-nav .nav-flyout {
+  position: absolute;
+  background-color: #080d11;
+  z-index: 9;
+  left: 2.5em;
+  top: 0;
+  height: 100vh;
+  transform: translateX(100%);
+  transition: all 0.5s ease;
+}
+
+.sidebar-nav .nav-flyout a:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* -------------
+Hover
+----------------*/
+.sidebar-nav ul > li:hover .nav-flyout {
+  transform: translateX(0);
+  transition: all 0.5s ease;
+}
+
+/* top menu css */
+
+#top_navigation {
+  margin: 27px auto 0;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  position: relative;
+  width: 310px;
+  height: 50px;
+  background-color: #34495e;
+  border-radius: 8px;
+  font-size: 0;
+}
+
+#top_navigation > #top_menu_item {
+  line-height: 50px;
+  height: 100%;
+  font-size: 15px;
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+}
+
+#top_navigation .animation {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  z-index: 0;
+  transition: all 0.5s ease 0s;
+  border-radius: 8px;
+}
+
+#top_menu_item:nth-child(1) {
+  width: 100px;
+}
+
+a:nth-child(2) {
+  width: 110px;
+}
+
+a:nth-child(3) {
+  width: 100px;
+}
+
+.top_navigation .start-home,
+a:nth-child(1):hover ~ .animation {
+  width: 100px;
+  left: 0;
+  background-color: #1abc9c;
+}
+
+.top_navigation .start-logout,
+a:nth-child(2):hover ~ .animation {
+  width: 110px;
+  left: 100px;
+  background-color: #3498db;
+}
+
+.top_navigation .start-profile,
+a:nth-child(3):hover ~ .animation {
+  width: 100px;
+  left: 210px;
+  background-color: #e74c3c;
+}
+
+#content_wrapper {
+  display: flex;
+  flex-direction: column;
+}
