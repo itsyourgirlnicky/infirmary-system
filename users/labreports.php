@@ -2,79 +2,59 @@
 session_start();
 include('config.php');
 
-$err = ''; // Initialize error variable
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
 
-// Get patient_id and lab_request_id from URL if set
-$patient_id = isset($_GET['patient_id']) ? $_GET['patient_id'] : null;
-$lab_request_id = isset($_GET['lab_request_id']) ? $_GET['lab_request_id'] : null;
-
-if ($lab_request_id) {
-    // Fetch existing lab request details for update
+// Fetch the lab request record for editing if `lab_request_id` is provided
+$lab_request = null;
+if (isset($_GET['lab_request_id'])) {
+    $lab_request_id = intval($_GET['lab_request_id']);
     $query = "SELECT * FROM labrequests WHERE lab_request_id = ?";
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param('i', $lab_request_id);
     $stmt->execute();
-    $res = $stmt->get_result();
-    $lab_request = $res->fetch_object();
-}
+    $result = $stmt->get_result();
+    $lab_request = $result->fetch_assoc();
+    $stmt->close();
 
-// Fetch patient name
-$patient = null;
-if ($patient_id) {
-    $ret = "SELECT name FROM patients WHERE patient_id = ?";
-    $stmt = $mysqli->prepare($ret);
-    $stmt->bind_param('i', $patient_id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $patient = $res->fetch_object();
-}
-
-// Fetch the latest consultation id for the patient
-$consultation_id = null;
-if ($patient_id) {
-    $ret_consultation = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
-    $stmt_consultation = $mysqli->prepare($ret_consultation);
-    $stmt_consultation->bind_param('i', $patient_id);
-    $stmt_consultation->execute();
-    $res_consultation = $stmt_consultation->get_result();
-    $consultation = $res_consultation->fetch_object();
-    $consultation_id = $consultation ? $consultation->consultation_id : '';
-}
-
-if (isset($_POST['add_lab_request'])) {
-    $lab_request_id = $_POST['lab_request_id'];
-    $consultation_id = $_POST['consultation_id'];
-    $patient_id = $_POST['patient_id'];
-    $test_name = trim($_POST['test_name']);
-    $result = trim($_POST['result']);
-    $status = trim($_POST['status']);
-    $created_at = date('Y-m-d H:i:s');
-
-    // Server-side validation
-    if (empty($test_name) || empty($status)) {
-        $err = "Test name and status are required.";
-    } elseif ($lab_request_id && empty($result)) {
-        $err = "Result is required for updating.";
-    } else {
-        if ($lab_request_id) {
-            // Update existing lab request
-            $query = "UPDATE labrequests SET test_name = ?, result = ?, status = ? WHERE lab_request_id = ?";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('sssi', $test_name, $result, $status, $lab_request_id);
-        } else {
-            // Insert new lab request
-            $query = "INSERT INTO labrequests (consultation_id, patient_id, test_name, result, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $mysqli->prepare($query);
-            $stmt->bind_param('iissss', $consultation_id, $patient_id, $test_name, $result, $status, $created_at);
-        }
-
-        if ($stmt->execute()) {
-            header("Location: labrequest.php?patient_id=$patient_id");
-            exit();
-        } else {
-            $err = "Error: " . $stmt->error;
-        }
+    if (!$lab_request) {
+        echo "Lab request record not found.";
+        exit();
     }
+}
+
+// Handle form submission to create or update lab request record
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $lab_request_id = isset($_POST['lab_request_id']) ? intval($_POST['lab_request_id']) : null;
+    $consultation_id = intval($_POST['consultation_id']);
+    $patient_id = intval($_POST['patient_id']);
+    $user_id = $_SESSION['user_id'];
+    $test_name = $_POST['test_name'];
+    $result = $_POST['result'];
+    $status = $_POST['status'];
+
+    if ($lab_request_id) {
+        // Update existing lab request
+        $query = "UPDATE labrequests SET consultation_id = ?, patient_id = ?, user_id = ?, test_name = ?, result = ?, status = ? WHERE lab_request_id = ?";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iissssi', $consultation_id, $patient_id, $user_id, $test_name, $result, $status, $lab_request_id);
+    } else {
+        // Create new lab request
+        $query = "INSERT INTO labrequests (consultation_id, patient_id, user_id, test_name, result, status) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iissss', $consultation_id, $patient_id, $user_id, $test_name, $result, $status);
+    }
+
+    if ($stmt->execute()) {
+        header("Location: managelabrequests.php");
+        exit();
+    } else {
+        $err_save = "Failed to save lab request. Please try again.";
+    }
+    $stmt->close();
 }
 ?>
 
@@ -83,55 +63,73 @@ if (isset($_POST['add_lab_request'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</title>
-    <link rel="stylesheet" href="consultation.css">
+    <title><?php echo isset($lab_request) ? 'Update' : 'Create'; ?> Lab Request</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="navbar">
+    <header style="background-color: #800000; color: #ffc300; padding: 10px;">
         <div class="container text-center">
-            <h1 style="margin: 0; font-size: 24px; color: #ffc300;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
+            <h1 style="font-size: 24px;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
         </div>
     </header>
 
     <div class="container">
-        <h2 class="header-title"><?php echo $lab_request_id ? 'Update' : 'Add'; ?> Lab Request</h2>
-        <?php if ($err) { echo "<div style='color: red;'>$err</div>"; } ?>
-        <form id="labRequestForm" method="post" action="labrequest.php?patient_id=<?php echo $patient_id; ?><?php if ($lab_request_id) echo '&lab_request_id=' . $lab_request_id; ?>" onsubmit="return validateLabRequestForm()">
-            <input type="hidden" name="lab_request_id" value="<?php echo htmlspecialchars($lab_request_id); ?>">
-            <div class="form-group">
-                <label for="patientName">Patient Name</label>
-                <input type="text" id="patientName" name="patient_name" value="<?php echo htmlspecialchars($patient->name ?? ''); ?>" readonly>
+        <div class="content-page">
+            <div class="content">
+                <div class="page-title-box">
+                    <div class="breadcrumb">
+                        <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
+                        <div class="breadcrumb-item"><a href="managelabrequests.php">Manage Lab Requests</a></div>
+                        <div class="breadcrumb-item active"><?php echo isset($lab_request) ? 'Update' : 'Create'; ?> Lab Request</div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <h4 class="header-title"><?php echo isset($lab_request) ? 'Update' : 'Create'; ?> Lab Request</h4>
+                    <?php if (isset($err_save)) { echo "<p class='text-danger'>$err_save</p>"; } ?>
+                    <form action="labrequest.php<?php echo isset($lab_request) ? '?lab_request_id=' . $lab_request['lab_request_id'] : ''; ?>" method="POST">
+                        <?php if (isset($lab_request)) { ?>
+                            <input type="hidden" name="lab_request_id" value="<?php echo $lab_request['lab_request_id']; ?>">
+                        <?php } ?>
+                        <div class="form-group">
+                            <label for="consultation_id">Consultation ID</label>
+                            <input type="number" class="form-control" id="consultation_id" name="consultation_id" value="<?php echo isset($lab_request) ? $lab_request['consultation_id'] : ''; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient_id">Patient ID</label>
+                            <input type="number" class="form-control" id="patient_id" name="patient_id" value="<?php echo isset($lab_request) ? $lab_request['patient_id'] : ''; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="test_name">Test Name</label>
+                            <input type="text" class="form-control" id="test_name" name="test_name" value="<?php echo isset($lab_request) ? $lab_request['test_name'] : ''; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="result">Result</label>
+                            <textarea class="form-control" id="result" name="result" required><?php echo isset($lab_request) ? $lab_request['result'] : ''; ?></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="pending" <?php echo (isset($lab_request) && $lab_request['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                <option value="completed" <?php echo (isset($lab_request) && $lab_request['status'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="save_lab_request"><?php echo isset($lab_request) ? 'Update' : 'Create'; ?> Lab Request</button>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="patientID">Patient ID</label>
-                <input type="text" id="patientID" name="patient_id" value="<?php echo $patient_id; ?>" readonly>
-            </div>
-            <input type="hidden" id="consultationID" name="consultation_id" value="<?php echo htmlspecialchars($consultation_id); ?>">
-            <div class="form-group">
-                <label for="testName">Test Name</label>
-                <input type="text" id="testName" name="test_name" value="<?php echo htmlspecialchars($lab_request->test_name ?? ''); ?>" required>
-            </div>
-            <div class="form-group">
-                <label for="result">Result</label>
-                <textarea id="result" name="result" rows="4"><?php echo htmlspecialchars($lab_request->result ?? ''); ?></textarea>
-            </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select id="status" name="status" required>
-                    <option value="pending" <?php if (isset($lab_request->status) && $lab_request->status == 'pending') echo 'selected'; ?>>Pending</option>
-                    <option value="completed" <?php if (isset($lab_request->status) && $lab_request->status == 'completed') echo 'selected'; ?>>Completed</option>
-                </select>
-            </div>
-            <button type="submit" name="add_lab_request" class="btn"><?php echo $lab_request_id ? 'Update' : 'Save'; ?> Lab Request</button>
-        </form>
+        </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Catholic University of Eastern Africa</p>
+    <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
+        <div class="text-center">
+            <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
-
-    <script src="validation.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

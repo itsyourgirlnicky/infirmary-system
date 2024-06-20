@@ -41,7 +41,7 @@ if (isset($_POST['update_vitals'])) {
 
     if ($stmt->affected_rows > 0) {
         $success = "Patient vitals updated successfully";
-        header("Location: managevitals.php");
+        header("Location: managetriage.php");
         exit();
     } else {
         $err = "No changes were made to the patient vitals.";

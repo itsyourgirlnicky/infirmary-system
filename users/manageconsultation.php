@@ -72,14 +72,18 @@ include('config.php');
                                     </thead>
                                     <tbody>
                                     <?php
-                                    $ret = "SELECT * FROM patients ORDER BY created_at ASC";
-                                    $stmt = $mysqli->prepare($ret);
+                                    // Select patients who have consultation records
+                                    $query = "SELECT p.patient_id, p.name, c.consultation_id 
+                                              FROM patients p 
+                                              INNER JOIN consultations c ON p.patient_id = c.patient_id 
+                                              ORDER BY p.created_at ASC";
+                                    $stmt = $mysqli->prepare($query);
                                     $stmt->execute();
                                     $res = $stmt->get_result();
                                     $cnt = 1;
                                     while ($row = $res->fetch_object()) {
-                                        $consultation_url = "consultation.php?patient_id=" . htmlspecialchars($row->patient_id);
-                                        $labreport_url = "labreport.php?patient_id=" . htmlspecialchars($row->patient_id);
+                                        $consultation_url = "updateconsultation.php?consultation_id=" . htmlspecialchars($row->consultation_id);
+                                        $labreport_url = "viewlabreport.php?patient_id=" . htmlspecialchars($row->patient_id);
                                         $prescription_url = "prescription.php?patient_id=" . htmlspecialchars($row->patient_id);
                                     ?>
                                         <tr>

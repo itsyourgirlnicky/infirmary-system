@@ -74,7 +74,7 @@ include('config.php');
                 <div class="row">
                     <div class="col-12">
                         <div class="card-box">
-                            <h4 class="header-title">Laboratory Requests</h4>
+                            <h4 class="header-title">Patients with Lab Requests</h4>
                             <div class="mb-2">
                                 <div class="row">
                                     <div class="col-12 text-sm-center form-inline">
@@ -92,30 +92,34 @@ include('config.php');
                                             <th data-hide="phone">Action</th>
                                         </tr>
                                     </thead>
-                                    <?php
-                                    $ret = "SELECT p.*
-                                            FROM patients p
-                                            INNER JOIN vitals v ON p.patient_id = v.patient_id
-                                            INNER JOIN consultations c ON p.patient_id = c.patient_id
-                                            ORDER BY p.created_at ASC";
-                                    $stmt = $mysqli->prepare($ret);
-                                    $stmt->execute();
-                                    $res = $stmt->get_result();
-                                    $cnt = 1;
-                                    while ($row = $res->fetch_object()) {
-                                    ?>
-                                        <tbody>
+                                    <tbody>
+                                        <?php
+                                        // Retrieve patients with lab requests
+                                        $query = "SELECT DISTINCT p.patient_id, p.name
+                                                  FROM patients p
+                                                  INNER JOIN consultations c ON p.patient_id = c.patient_id
+                                                  INNER JOIN labrequests l ON p.patient_id = l.patient_id
+                                                  ORDER BY p.name ASC";
+                                        $stmt = $mysqli->prepare($query);
+                                        $stmt->execute();
+                                        $res = $stmt->get_result();
+                                        $cnt = 1;
+                                        while ($row = $res->fetch_object()) {
+                                            ?>
                                             <tr>
                                                 <td><?php echo $cnt; ?></td>
                                                 <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                                 <td><?php echo htmlspecialchars($row->name); ?></td>
                                                 <td><a href="viewlabrequests.php?patient_id=<?php echo htmlspecialchars($row->patient_id); ?>" class="badge badge-primary"><i class="mdi mdi-flask-outline"></i> View Lab Requests</a></td>
                                             </tr>
-                                        </tbody>
-                                    <?php $cnt = $cnt + 1; } ?>
+                                            <?php
+                                            $cnt++;
+                                        }
+                                        ?>
+                                    </tbody>
                                     <tfoot>
                                         <tr class="active">
-                                            <td colspan="8">
+                                            <td colspan="4">
                                                 <div class="text-right">
                                                     <ul class="pagination pagination-rounded justify-content-end footable-pagination m-t-10 mb-0"></ul>
                                                 </div>
@@ -124,10 +128,10 @@ include('config.php');
                                     </tfoot>
                                 </table>
                             </div> <!-- end .table-responsive-->
-                        </div> <!-- end card-box -->
-                    </div> <!-- end col -->
+                        </div> <!-- end .card-box -->
+                    </div> <!-- end .col -->
                 </div>
-                <!-- end row -->
+                <!-- end .row -->
 
             </div> <!-- container -->
 

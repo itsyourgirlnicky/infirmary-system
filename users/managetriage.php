@@ -59,8 +59,8 @@ include('config.php');
                                     <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                     <td><?php echo htmlspecialchars($row->name); ?></td>
                                     <td>
-                                        <a href="updatevitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
-                                        <a href="viewvitals.php?vital_id=<?php echo $row->vital_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> View</a>
+                                        <a href="updatevitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
+                                        <a href="viewvitals.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> View</a>
                                     </td>
                                 </tr>
                             <?php $cnt++; } ?>
