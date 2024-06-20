@@ -92,8 +92,6 @@ $result = $mysqli->query($query);
                                 <tr>
                                     <th>Vital ID</th>
                                     <th>Patient ID</th>
-                                    <th>User ID</th>
-                                    <th>Visit Date</th>
                                     <th>Temperature</th>
                                     <th>Blood Pressure</th>
                                     <th>Weight</th>
@@ -108,8 +106,6 @@ $result = $mysqli->query($query);
                                     <tr>
                                         <td><?php echo $row['vital_id']; ?></td>
                                         <td><?php echo $row['patient_id']; ?></td>
-                                        <td><?php echo $row['user_id']; ?></td>
-                                        <td><?php echo htmlspecialchars($row['visit_date']); ?></td>
                                         <td><?php echo htmlspecialchars($row['temperature']); ?></td>
                                         <td><?php echo htmlspecialchars($row['blood_pressure']); ?></td>
                                         <td><?php echo htmlspecialchars($row['weight']); ?></td>
@@ -117,7 +113,7 @@ $result = $mysqli->query($query);
                                         <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                                         <td>
-                                            <a href="updatevital.php?vital_id=<?php echo $row['vital_id']; ?>" class="badge badge-primary">Update</a>
+                                            <a href="updatevitals.php?vital_id=<?php echo $row['vital_id']; ?>" class="badge badge-primary">Update</a>
                                             <a href="triagerecords.php?vital_id=<?php echo $row['vital_id']; ?>&action=delete" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
                                         </td>
                                     </tr>
@@ -181,7 +177,7 @@ $result = $mysqli->query($query);
                 </form>
             </div>
         </div>
-    </div>
+    </div>  
 
     <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
         <div class="text-center">
