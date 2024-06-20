@@ -89,7 +89,7 @@ if (isset($_POST['user_register'])) {
                     <option value="laboratory_technician">Laboratory Technician</option>
                     <option value="pharmacist">Pharmacist</option>
                     <option value="receptionist">Receptionist</option>
-                    <option value="receptionist">Admin</option>
+                    <option value="admin">Admin</option>
                 </select>
                 <button name="user_register" type="submit">Create</button>
             </form>

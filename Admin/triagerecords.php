@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vital'])) {
 
     $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('iissiiis', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height, $status);
+    $stmt->bind_param('isssiiis', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height, $status);
     if ($stmt->execute()) {
         header("Location: triagerecords.php");
         exit();
@@ -57,7 +57,7 @@ $result = $mysqli->query($query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triage Records</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="a.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -113,8 +113,8 @@ $result = $mysqli->query($query);
                                         <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                                         <td><?php echo htmlspecialchars($row['status']); ?></td>
                                         <td>
-                                            <a href="updatevitals.php?vital_id=<?php echo $row['vital_id']; ?>" class="badge badge-primary">Update</a>
-                                            <a href="triagerecords.php?vital_id=<?php echo $row['vital_id']; ?>&action=delete" class="badge badge-danger" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
+                                            <a href="updatevitals.php?patient_id=<?php echo $row['vital_id']; ?>" class="btn btn-primary btn-sm">Update</a>
+                                            <a href="triagerecords.php?vital_id=<?php echo $row['vital_id']; ?>&action=delete" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this record?');">Delete</a>
                                         </td>
                                     </tr>
                                 <?php } ?>

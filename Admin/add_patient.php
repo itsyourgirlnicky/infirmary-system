@@ -26,7 +26,7 @@ if (isset($_POST['add_patient'])) {
         } else {
             // Insert the new patient into the database
             $stmt = $mysqli->prepare("INSERT INTO patients (user_id, name, age, gender, contact_number, student_employee_number, address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-            $stmt->bind_param('isissss', $user_id, $name, $age, $gender, $contact_number, $student_employee_number, $address);
+            $stmt->bind_param('ssissss', $user_id, $name, $age, $gender, $contact_number, $student_employee_number, $address);
             if ($stmt->execute()) {
                 $success = "Patient added successfully";
                 header("Location: registrationrecords.php");
