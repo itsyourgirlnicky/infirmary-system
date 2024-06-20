@@ -40,10 +40,10 @@
                 <a href="#"><i class="ion-ios-settings"></i> <span class="">Triage</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href=".php"><i class="ion-ios-alarm-outline"></i>Triage Details Records</a>
+                    <a href="triagerecords.php"><i class="ion-ios-alarm-outline"></i>Triage Details Records</a>
                   </li>
                   <li>
-                    <a href=".php"><i class="ion-ios-camera-outline"></i>Manage Triage Reprts</a>
+                    <a href="triagereports.php"><i class="ion-ios-camera-outline"></i>Manage Triage Reprts</a>
                   </li>
                 </ul>
               </li>
