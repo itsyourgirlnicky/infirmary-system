@@ -173,7 +173,7 @@ $patient_id = $_GET['patient_id'];
                                     <tbody>
                                     <?php
                                     $ret = "SELECT l.*
-                                            FROM lab_requests l
+                                            FROM labrequests l
                                             WHERE l.patient_id = ?
                                             ORDER BY l.request_date ASC";
                                     $stmt = $mysqli->prepare($ret);

@@ -16,7 +16,7 @@ if (isset($_GET['patient_id'])) {
         $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height, created_at, status) 
                   VALUES (?, ?, NOW(), ?, ?, ?, ?, NOW(), 'completed')";
         $stmt = $mysqli->prepare($query);
-        $stmt->bind_param('iisdds', $patient_id, $_SESSION['user_id'], $temperature, $blood_pressure, $weight, $height);
+        $stmt->bind_param('issdds', $patient_id, $_SESSION['user_id'], $temperature, $blood_pressure, $weight, $height);
         $stmt->execute();
         
         if ($stmt->affected_rows > 0) {

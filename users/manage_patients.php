@@ -55,7 +55,7 @@ include('config.php');
                                         <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                         <td><?php echo htmlspecialchars($row->name); ?></td>
                                         <td>
-                                            <a href="update_patient.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
+                                            <a href="updatepatient.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> Update</a>
                                             <a href="viewpatient.php?patient_id=<?php echo $row->patient_id; ?>" class="badge badge-primary"><i class="mdi mdi-check-box-outline"></i> View</a>
                                         </td>
                                     </tr>

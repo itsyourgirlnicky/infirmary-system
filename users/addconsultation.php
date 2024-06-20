@@ -29,7 +29,7 @@ if (isset($_POST['add_consultation'])) {
         $query = "INSERT INTO consultations (patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan) 
                   VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $mysqli->prepare($query);
-        $stmt->bind_param('iisssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
+        $stmt->bind_param('issssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
 
         if ($stmt->execute()) {
             header("Location: consultation.php");
