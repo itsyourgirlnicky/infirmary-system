@@ -32,7 +32,7 @@
                     <a href="registrationrecords.php"><i class="ion-ios-color-filter-outline"></i>Registration Records</a>
                   </li>
                   <li>
-                    <a href=".php"><i class="ion-ios-clock-outline"></i>Registration Reports</a>
+                    <a href="registrationreports.php"><i class="ion-ios-clock-outline"></i>Registration Reports</a>
                   </li>
                 </ul>
               </li>
