@@ -29,7 +29,7 @@
                 <a href="#"><i class="ion-bag"></i> <span>Patient Registration</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href=".php"><i class="ion-ios-color-filter-outline"></i>Registration Records</a>
+                    <a href="registrationrecords.php"><i class="ion-ios-color-filter-outline"></i>Registration Records</a>
                   </li>
                   <li>
                     <a href=".php"><i class="ion-ios-clock-outline"></i>Registration Reports</a>

@@ -1,0 +1,99 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+header.navbar {
+    background-color: #800000;
+    color: #ffc300;
+    padding: 10px;
+    text-align: center;
+}
+
+header.navbar h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-title-box {
+    margin-bottom: 20px;
+}
+
+.card-box {
+    padding: 20px;
+    border: 1px solid #e3e6f0;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
+form .form-group label {
+    font-weight: 600;
+}
+
+form .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+form .form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+form .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+form .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+form .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+form .btn-success:hover,
+form .btn-primary:hover {
+    opacity: 0.9;
+}
+
+footer.footer {
+    background-color: #800000;
+    color: #ffc300;
+    padding: 10px;
+    text-align: center;
+}
+
+footer.footer p {
+    margin: 0;
+    font-size: 14px;
+}
