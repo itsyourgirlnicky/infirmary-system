@@ -1,6 +1,47 @@
 <?php
 session_start();
 include('config.php');
+
+// Handle Delete action
+if (isset($_GET['lab_request_id']) && isset($_GET['action']) && $_GET['action'] == 'delete') {
+    $lab_request_id = intval($_GET['lab_request_id']);
+    $query = "DELETE FROM labrequests WHERE lab_request_id = ?";
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param('i', $lab_request_id);
+    if ($stmt->execute()) {
+        header("Location: admin_dashboard.php");
+        exit();
+    } else {
+        $err_delete = "Failed to delete lab request. Please try again.";
+    }
+    $stmt->close();
+}
+
+// Handle Add action
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_lab_request'])) {
+    $consultation_id = $_POST['consultation_id'];
+    $patient_id = $_POST['patient_id'];
+    $user_id = $_SESSION['user_id'];
+    $test_name = $_POST['test_name'];
+    $created_at = date('Y-m-d H:i:s');
+    $result = $_POST['result'];
+    $status = $_POST['status'];
+
+    $query = "INSERT INTO labrequests (consultation_id, patient_id, user_id, test_name, created_at, result, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param('iiissss', $consultation_id, $patient_id, $user_id, $test_name, $created_at, $result, $status);
+    if ($stmt->execute()) {
+        header("Location: admin_dashboard.php");
+        exit();
+    } else {
+        $err_add = "Failed to add lab request. Please try again.";
+    }
+    $stmt->close();
+}
+
+// Fetch lab requests from the database
+$query = "SELECT lab_request_id, consultation_id, patient_id, user_id, test_name, created_at, result, status FROM labrequests ORDER BY created_at DESC";
+$result = $mysqli->query($query);
 ?>
 
 <!DOCTYPE html>
@@ -78,9 +119,13 @@ include('config.php');
                             <div class="mb-2">
                                 <div class="row">
                                     <div class="col-12 text-sm-center form-inline">
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#addLabRequestModal">Add New Lab Request</button>
                                     </div>
                                 </div>
                             </div>
+
+                            <?php if (isset($err_add)) { echo "<p class='text-danger'>$err_add</p>"; } ?>
+                            <?php if (isset($err_delete)) { echo "<p class='text-danger'>$err_delete</p>"; } ?>
 
                             <div class="table-responsive">
                                 <table id="demo-foo-filtering" class="table table-bordered toggle-circle mb-0" data-page-size="7">
@@ -137,10 +182,60 @@ include('config.php');
 
         </div> <!-- content -->
     </div>
-    <footer class="footer">
-            <div class="container">
-                <p>&copy; 2024 Catholic University of Eastern Africa</p>
+
+    <!-- Add Lab Request Modal -->
+    <div class="modal fade" id="addLabRequestModal" tabindex="-1" role="dialog" aria-labelledby="addLabRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="admin_dashboard.php" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addLabRequestModalLabel">Add New Lab Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="consultation_id">Consultation ID</label>
+                            <input type="number" class="form-control" id="consultation_id" name="consultation_id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient_id">Patient ID</label>
+                            <input type="number" class="form-control" id="patient_id" name="patient_id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="test_name">Test Name</label>
+                            <input type="text" class="form-control" id="test_name" name="test_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="result">Result</label>
+                            <input type="text" class="form-control" id="result" name="result" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="add_lab_request">Add Lab Request</button>
+                    </div>
+                </form>
             </div>
-        </footer>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Catholic University of Eastern Africa</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

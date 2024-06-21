@@ -65,7 +65,6 @@ include('config.php');
                                             <th>#</th>
                                             <th>Patient Name</th>
                                             <th>Patient ID</th>
-                                            <th>Consultation Updates</th>
                                             <th>Lab Report</th>
                                             <th>Prescription</th>
                                         </tr>
@@ -82,7 +81,6 @@ include('config.php');
                                     $res = $stmt->get_result();
                                     $cnt = 1;
                                     while ($row = $res->fetch_object()) {
-                                        $consultation_url = "updateconsultation.php?consultation_id=" . htmlspecialchars($row->consultation_id);
                                         $labreport_url = "viewlabreport.php?patient_id=" . htmlspecialchars($row->patient_id);
                                         $prescription_url = "prescription.php?patient_id=" . htmlspecialchars($row->patient_id);
                                     ?>
@@ -90,7 +88,6 @@ include('config.php');
                                             <td><?php echo $cnt; ?></td>
                                             <td><?php echo htmlspecialchars($row->name); ?></td>
                                             <td><?php echo htmlspecialchars($row->patient_id); ?></td>
-                                            <td><a href="<?php echo $consultation_url; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Consultation Updates</a></td>
                                             <td><a href="<?php echo $labreport_url; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Lab Report</a></td>
                                             <td><a href="<?php echo $prescription_url; ?>" class="badge badge-success"><i class="mdi mdi-beaker"></i> Prescription</a></td>
                                         </tr>

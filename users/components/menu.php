@@ -65,15 +65,23 @@
                 <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Pharmacy</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-filing-outline"></i>Prescriptions</a>
+                    <a href="prescriptionrecords.php"><i class="ion-ios-filing-outline"></i>Prescriptions</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-information-outline"></i>Manage Prescriptions</a>
+                    <a href="manageprescriptions.php"><i class="ion-ios-information-outline"></i>Manage Prescriptions</a>
                   </li>
                 </ul>
               </li>
               <li>
-                <a href="#"><i class="ion-ios-medical-outline"></i> <span class="">Billing</span></a>
+                <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
+                <ul class="nav-flyout">
+                  <li>
+                    <a href="billpatient.php"><i class="ion-ios-filing-outline"></i>Bill Patient</a>
+                  </li>
+                  <li>
+                    <a href="managebilling.php"><i class="ion-ios-information-outline"></i>Manage Billing</a>
+                  </li>
+                </ul>
               </li>
             </ul>
           </nav>

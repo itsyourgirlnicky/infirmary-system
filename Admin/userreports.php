@@ -2,8 +2,27 @@
 session_start();
 include('config.php');
 
-// Fetch user records
-$query = "SELECT * FROM users ORDER BY created_at DESC";
+// Fetch user records with optional filters
+$roleFilter = '';
+$dateFilter = '';
+
+if (isset($_POST['filter'])) {
+    if (!empty($_POST['role'])) {
+        $roleFilter = $mysqli->real_escape_string($_POST['role']);
+    }
+    if (!empty($_POST['date'])) {
+        $dateFilter = $mysqli->real_escape_string($_POST['date']);
+    }
+}
+
+$query = "SELECT * FROM users WHERE 1=1";
+if ($roleFilter) {
+    $query .= " AND role LIKE '%$roleFilter%'";
+}
+if ($dateFilter) {
+    $query .= " AND DATE(created_at) = '$dateFilter'";
+}
+$query .= " ORDER BY created_at DESC";
 $result = $mysqli->query($query);
 $users = [];
 while ($row = $result->fetch_assoc()) {
@@ -61,6 +80,19 @@ while ($row = $usersByTimeResult->fetch_assoc()) {
                     <div class="report-summary mb-4">
                         <h5>Total Users: <?php echo $totalUsers; ?></h5>
                     </div>
+
+                    <!-- Filter Form -->
+                    <form method="POST" action="" class="form-inline mb-4">
+                        <div class="form-group mr-2">
+                            <label for="role" class="mr-2">Filter by Role:</label>
+                            <input type="text" class="form-control" id="role" name="role" value="<?php echo htmlspecialchars($roleFilter); ?>">
+                        </div>
+                        <div class="form-group mr-2">
+                            <label for="date" class="mr-2">Filter by Date:</label>
+                            <input type="date" class="form-control" id="date" name="date" value="<?php echo htmlspecialchars($dateFilter); ?>">
+                        </div>
+                        <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                    </form>
                     
                     <h5>Users by Role:</h5>
                     <?php foreach ($rolesData as $role) { ?>

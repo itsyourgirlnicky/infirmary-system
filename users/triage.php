@@ -1,6 +1,7 @@
 <?php
 session_start();
 include('config.php');
+
 // Handle Add action
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vital'])) {
     $patient_id = $_POST['patient_id'];
@@ -12,16 +13,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vital'])) {
     $height = $_POST['height'];
     $status = $_POST['status'];
 
-    $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // Check if patient_id exists in patients table
+    $query = "SELECT patient_id FROM patients WHERE patient_id = ?";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('iissiiis', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height, $status);
+    $stmt->bind_param('i', $patient_id);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows == 0) {
+        $err_add = "Patient ID does not exist.";
+    } else {
+        $stmt->close();
+
+        // Insert into vitals table
+        $query = "INSERT INTO vitals (patient_id, user_id, visit_date, temperature, blood_pressure, weight, height, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('isssiiis', $patient_id, $user_id, $visit_date, $temperature, $blood_pressure, $weight, $height, $status);
+        if ($stmt->execute()) {
+            header("Location: triage.php");
+            exit();
+        } else {
+            $err_add = "Failed to add triage record. Please try again.";
+        }
+        $stmt->close();
+    }
+    
     if ($stmt->execute()) {
-        header("Location: triagerecords.php");
+        // Get the newly inserted vital ID
+        $new_vital_id = $mysqli->insert_id;
+    
+        // Redirect to consultation page with the vital ID
+        header("Location: consultation.php?vital_id=$new_vital_id");
         exit();
     } else {
         $err_add = "Failed to add triage record. Please try again.";
     }
-    $stmt->close();
+    
 }
 ?>
 
@@ -54,8 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vital'])) {
             <div class="card-box">
                 <h4 class="header-title">Patients Vitals</h4>
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                        <button class="btn btn-success" data-toggle="modal" data-target="#addTriageModal">Add New Triage Record</button>
-                    </div>
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addTriageModal">Add New Triage Record</button>
+                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered toggle-circle mb-0" data-page-size="7">
                         <thead>
@@ -106,65 +133,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_vital'])) {
         </div> <!-- content -->
     </div> <!-- content-page -->
 </div> <!-- container -->
+
 <!-- Add Triage Modal -->
 <div class="modal fade" id="addTriageModal" tabindex="-1" role="dialog" aria-labelledby="addTriageModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <form action="triagerecords.php" method="POST">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addTriageModalLabel">Add New Triage Record</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="triage.php" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTriageModalLabel">Add New Triage Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <?php if (isset($err_add)) { echo "<p class='text-danger'>$err_add</p>"; } ?>
+                    <div class="form-group">
+                        <label for="patient_id">Patient ID</label>
+                        <input type="number" class="form-control" id="patient_id" name="patient_id" required>
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="patient_id">Patient ID</label>
-                            <input type="number" class="form-control" id="patient_id" name="patient_id" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="visit_date">Visit Date</label>
-                            <input type="date" class="form-control" id="visit_date" name="visit_date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="temperature">Temperature</label>
-                            <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="blood_pressure">Blood Pressure</label>
-                            <input type="number" class="form-control" id="blood_pressure" name="blood_pressure" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="weight">Weight</label>
-                            <input type="number" class="form-control" id="weight" name="weight" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="height">Height</label>
-                            <input type="number" class="form-control" id="height" name="height" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control" id="status" name="status" required>
-                                <option value="pending">Pending</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label for="visit_date">Visit Date</label>
+                        <input type="date" class="form-control" id="visit_date" name="visit_date" required>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" name="add_vital">Add Triage Record</button>
+                    <div class="form-group">
+                        <label for="temperature">Temperature</label>
+                        <input type="number" step="0.1" class="form-control" id="temperature" name="temperature" required>
                     </div>
-                </form>
-            </div>
+                    <div class="form-group">
+                        <label for="blood_pressure">Blood Pressure</label>
+                        <input type="number" class="form-control" id="blood_pressure" name="blood_pressure" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight</label>
+                        <input type="number" class="form-control" id="weight" name="weight" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Height</label>
+                        <input type="number" class="form-control" id="height" name="height" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" name="add_vital">Add Triage Record</button>
+                </div>
+            </form>
         </div>
-    </div>  //end
+    </div>
+</div>  
+
 <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
     <div style="text-align: center;">
         <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
     </div>
 </footer>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

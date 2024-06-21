@@ -51,10 +51,10 @@
                 <a href="#"><i class="ion-ios-briefcase-outline"></i> <span class="">Consultation</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href=".php"><i class="ion-ios-flame-outline"></i>Records Consultation Records</a>
+                    <a href="consultationrecords.php"><i class="ion-ios-flame-outline"></i>Records Consultation Records</a>
                   </li>
                   <li>
-                    <a href=".php"><i class="ion-ios-lightbulb-outline"></i>Consultation Reports</a>
+                    <a href="consultationreports.php"><i class="ion-ios-lightbulb-outline"></i>Consultation Reports</a>
                   </li>
                 </ul>
               </li>
@@ -62,10 +62,10 @@
                 <a href="#"><i class="ion-ios-analytics-outline"></i> <span class="">Laboratory</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href=".php"><i class="ion-ios-timer-outline"></i>Lab Records</a>
+                    <a href="managelabrecords.php"><i class="ion-ios-timer-outline"></i>Lab Records</a>
                   </li>
                   <li>
-                    <a href=".php"><i class="ion-arrow-graph-down-left"></i>Lab Reports</a>
+                    <a href="systemlabreports.php"><i class="ion-arrow-graph-down-left"></i>Lab Reports</a>
                   </li>
                 </ul>
               </li>
@@ -73,23 +73,24 @@
                 <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Pharmacy</span></a>
                 <ul class="nav-flyout">
                   <li>
-                    <a href="#"><i class="ion-ios-filing-outline"></i>Prescription Records</a>
+                    <a href="prescriptionrecords.php"><i class="ion-ios-filing-outline"></i>Prescription Records</a>
                   </li>
                   <li>
-                    <a href="#"><i class="ion-ios-information-outline"></i>Prescription Reports</a>
+                    <a href="prescriptionreports.php"><i class="ion-ios-information-outline"></i>Prescription Reports</a>
                   </li>
                 </ul>
               </li>
               <li>
                 <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
+                <ul class="nav-flyout">
+                  <li>
+                    <a href="#"><i class="ion-ios-filing-outline"></i>Billing Records</a>
+                  </li>
+                  <li>
+                    <a href="#"><i class="ion-ios-information-outline"></i>Billing Reports</a>
+                  </li>
+                </ul>
               </li>
-              <ul class="nav-flyout">
-                  <li>
-                    <a href="#"><i class="ion-ios-filing-outline"></i>Prescription Records</a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="ion-ios-information-outline"></i>Prescription Reports</a>
-                  </li>
             </ul>
           </nav>
         </aside>
