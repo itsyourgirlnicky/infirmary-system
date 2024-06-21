@@ -2,13 +2,7 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
-// Handle Delete action if needed 
+// Handle Delete action if needed
 if (isset($_GET['consultation_id'])) {
     $consultation_id = intval($_GET['consultation_id']);
     $query = "DELETE FROM consultations WHERE consultation_id = ?";
@@ -16,7 +10,7 @@ if (isset($_GET['consultation_id'])) {
     $stmt->bind_param('i', $consultation_id);
     if ($stmt->execute()) {
         // Deletion successful, redirect to refresh the page
-        header("Location: registrationrecords.php");
+        header("Location: consultationreports.php");
         exit();
     } else {
         $err_delete = "Failed to delete consultation. Please try again.";
@@ -24,13 +18,62 @@ if (isset($_GET['consultation_id'])) {
     $stmt->close();
 }
 
-// Fetch consultation records from the database
-$query = "SELECT consultation_id, patient_id, user_id, visit_date, created_at, consultation_type, notes, diagnosis, treatment_plan FROM consultations ORDER BY user_id, created_at DESC";
-$result = $mysqli->query($query);
+// Define initial query to fetch all consultations
+$query = "SELECT consultation_id, patient_id, user_id, visit_date, created_at, consultation_type, notes, diagnosis, treatment_plan FROM consultations";
 
-// Display error message if deletion fails
+// Initialize filter variables
+$filterUserId = '';
+$filterConsultationType = '';
+
+// Check if filters are applied via GET parameters
+if (isset($_GET['filter'])) {
+    $filterUserId = $_GET['user_id'];
+    $filterConsultationType = $_GET['consultation_type'];
+
+    // Prepare WHERE clause based on filter selections
+    $whereClause = [];
+    $params = [];
+    $paramTypes = '';
+
+    if (!empty($filterUserId)) {
+        $whereClause[] = "user_id = ?";
+        $params[] = $filterUserId;
+        $paramTypes .= 's'; // user_id is assumed to be a string
+    }
+    if (!empty($filterConsultationType)) {
+        $whereClause[] = "consultation_type = ?";
+        $params[] = $filterConsultationType;
+        $paramTypes .= 's'; // consultation_type is assumed to be a string
+    }
+
+    // Combine WHERE clauses if filters are applied
+    if (!empty($whereClause)) {
+        $query .= " WHERE " . implode(" AND ", $whereClause);
+    }
+
+    // Prepare statement and execute filtered query
+    $stmt = $mysqli->prepare($query);
+    if ($stmt) {
+        // Bind parameters if there are any
+        if (!empty($params)) {
+            $stmt->bind_param($paramTypes, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } else {
+        $err_filter = "Failed to execute filtered query.";
+    }
+} else {
+    // Execute the initial query without filters
+    $result = $mysqli->query($query);
+}
+
+// Display error message if deletion or filter fails
 if (isset($err_delete)) {
     echo "<p class='text-danger'>$err_delete</p>";
+}
+if (isset($err_filter)) {
+    echo "<p class='text-danger'>$err_filter</p>";
 }
 
 // Initialize arrays to store consultations grouped by user_id and created_at date
@@ -76,6 +119,26 @@ while ($row = $result->fetch_assoc()) {
                         <h4 class="header-title">Consultation Records</h4>
                     </div>
 
+                    <!-- Filter Form -->
+                    <form method="GET" action="" class="form-inline mb-4">
+                        <div class="form-group mr-2">
+                            <label for="user_id" class="mr-2">Filter by User ID:</label>
+                            <input type="text" class="form-control" id="user_id" name="user_id" value="<?php echo htmlspecialchars($filterUserId); ?>">
+                        </div>
+                        <div class="form-group mr-2">
+                            <label for="consultation_type" class="mr-2">Filter by Consultation Type:</label>
+                            <select class="form-control" id="consultation_type" name="consultation_type">
+                                <option value="">All</option>
+                                <option value="General" <?php if ($filterConsultationType === 'General') echo 'selected'; ?>>General</option>
+                                <option value="VCT" <?php if ($filterConsultationType === 'VCT') echo 'selected'; ?>>VCT</option>
+                                <option value="Dental" <?php if ($filterConsultationType === 'Dental') echo 'selected'; ?>>Dental</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                        <button type="submit" name="filter" value="true" class="btn btn-primary">Filter</button>
+                    </form>
+
+                    <!-- Display Records -->
                     <?php foreach ($consultationsByUser as $user_id => $userConsultations) { ?>
                         <h5>Consultations for User ID: <?php echo $user_id; ?></h5>
                         <?php foreach ($userConsultations as $date => $consultations) { ?>
@@ -93,6 +156,7 @@ while ($row = $result->fetch_assoc()) {
                                             <th>Notes</th>
                                             <th>Diagnosis</th>
                                             <th>Treatment Plan</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -107,6 +171,7 @@ while ($row = $result->fetch_assoc()) {
                                                 <td><?php echo htmlspecialchars($consultation['notes']); ?></td>
                                                 <td><?php echo htmlspecialchars($consultation['diagnosis']); ?></td>
                                                 <td><?php echo htmlspecialchars($consultation['treatment_plan']); ?></td>
+                                                <td><a href="?consultation_id=<?php echo $consultation['consultation_id']; ?>" class="btn btn-danger btn-sm">Delete</a></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

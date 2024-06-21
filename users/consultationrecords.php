@@ -82,17 +82,19 @@ include('config.php');
                                     $res = $stmt->get_result();
                                     $cnt = 1;
                                     while ($row = $res->fetch_object()) {
-                                        $labreport_url = "labreport.php?patient_id=" . htmlspecialchars($row->patient_id);
-                                        $notes_url = "consultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
-                                        $prescription_url = "prescription.php?patient_id=" . htmlspecialchars($row->patient_id);
-                                    ?>
+                                      
+                         $labreport_url = "viewlabreports.php?patient_id=" . htmlspecialchars($row->patient_id);
+                       $notes_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
+                        $prescription_url = "viewprescription.php?patient_id=" . htmlspecialchars($row->patient_id);
+?>
+
                                         <tr>
                                             <td><?php echo $cnt; ?></td>
                                             <td><?php echo htmlspecialchars($row->name); ?></td>
                                             <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                             <td><?php echo htmlspecialchars($row->visit_date); ?></td>
                                             <td><a href="<?php echo $labreport_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                            <td><a href="viewconsultationnotes.php<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View</a></td>
+                                            <td><a href="<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View</a></td>
                                             <td><a href="<?php echo $prescription_url; ?>" class="btn btn-primary btn-sm">View</a></td>
                                         </tr>
                                     <?php $cnt++; } ?>

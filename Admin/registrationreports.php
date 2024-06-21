@@ -2,36 +2,10 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');  // Handle admin login
-    exit();
-}
-
-// Handle Delete action
-if (isset($_GET['patient_id'])) {
-    $patient_id = intval($_GET['patient_id']);
-    $query = "DELETE FROM patients WHERE patient_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $patient_id);
-    if ($stmt->execute()) {
-        // Deletion successful, redirect to refresh the page
-        header("Location: registrationrecords.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete patient. Please try again.";
-    }
-    $stmt->close();
-}
-
 // Fetch patient records from the database
 $query = "SELECT patient_id, name, gender, created_at, user_id FROM patients ORDER BY created_at DESC";
 $result = $mysqli->query($query);
 
-// Display error message if deletion fails
-if (isset($err_delete)) {
-    echo "<p class='text-danger'>$err_delete</p>";
-}
 
 // Classify patients by gender and creation date
 $patientsByGender = [];
@@ -42,6 +16,7 @@ while ($row = $result->fetch_assoc()) {
     $patientsByDate[$date][] = $row;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,67 +47,73 @@ while ($row = $result->fetch_assoc()) {
                 <div class="card-box">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="header-title">Patient Records</h4>
-                        <a href="add_patient.php" class="btn btn-success">Add New Patient</a>
                     </div>
 
-                    <h5>Patients by Gender:</h5>
-                    <?php foreach ($patientsByGender as $gender => $patients) { ?>
-                        <h6><?php echo htmlspecialchars($gender); ?>:</h6>
-                        <div class="table-container mt-4">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Patient ID</th>
-                                        <th>Name</th>
-                                        <th>Gender</th>
-                                        <th>Created At</th>
-                                        <th>Registered By (UserID)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($patients as $patient) { ?>
-                                        <tr>
-                                            <td><?php echo $patient['patient_id']; ?></td>
-                                            <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['gender']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['created_at']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['user_id']); ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                    <!-- Filter Form -->
+                    <form method="GET" action="" class="form-inline mb-4">
+                        <div class="form-group mr-2">
+                            <label for="gender" class="mr-2">Filter by Gender:</label>
+                            <select class="form-control" id="gender" name="gender">
+                                <option value="">All Genders</option>
+                                <option value="Male" <?php if (isset($_GET['gender']) && $_GET['gender'] == 'Male') echo 'selected'; ?>>Male</option>
+                                <option value="Female" <?php if (isset($_GET['gender']) && $_GET['gender'] == 'Female') echo 'selected'; ?>>Female</option>
+                            </select>
                         </div>
-                    <?php } ?>
+                        <div class="form-group mr-2">
+                            <label for="date" class="mr-2">Filter by Date:</label>
+                            <input type="date" class="form-control" id="date" name="date" value="<?php echo isset($_GET['date']) ? htmlspecialchars($_GET['date']) : ''; ?>">
+                        </div>
+                        <button type="submit" name="filter" class="btn btn-primary">Filter</button>
+                    </form>
 
-                    <h5>Patients by Creation Date:</h5>
-                    <?php foreach ($patientsByDate as $date => $patients) { ?>
-                        <h6><?php echo htmlspecialchars($date); ?>:</h6>
-                        <div class="table-container mt-4">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Patient ID</th>
-                                        <th>Name</th>
-                                        <th>Gender</th>
-                                        <th>Created At</th>
-                                        <th>Registered By (UserID)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($patients as $patient) { ?>
-                                        <tr>
-                                            <td><?php echo $patient['patient_id']; ?></td>
-                                            <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['gender']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['created_at']); ?></td>
-                                            <td><?php echo htmlspecialchars($patient['user_id']); ?></td>
-                                            
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php } ?>
+                    <!-- Display Filtered Patients -->
+                    <?php
+                    $filteredPatients = $patientsByGender; // Start with all patients by gender
+
+                    // Apply filters if set
+                    if (isset($_GET['gender']) && !empty($_GET['gender'])) {
+                        $filteredPatients = [$patientsByGender[$_GET['gender']]]; // Filter by gender
+                    }
+
+                    if (isset($_GET['date']) && !empty($_GET['date'])) {
+                        $filteredPatients = [$patientsByDate[$_GET['date']]]; // Filter by date
+                    }
+
+                    // Display filtered results
+                    foreach ($filteredPatients as $key => $patients) {
+                        if ($key == 0) {
+                            echo '<h5>Patients by Gender:</h5>';
+                        } else {
+                            echo '<h5>Patients by Creation Date:</h5>';
+                        }
+                        foreach ($patients as $patient) {
+                            echo '
+                                <h6>' . htmlspecialchars($key == 0 ? $patient['gender'] : substr($patient['created_at'], 0, 10)) . ':</h6>
+                                <div class="table-container mt-4">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Patient ID</th>
+                                                <th>Name</th>
+                                                <th>Gender</th>
+                                                <th>Created At</th>
+                                                <th>Registered By (UserID)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>' . $patient['patient_id'] . '</td>
+                                                <td>' . htmlspecialchars($patient['name']) . '</td>
+                                                <td>' . htmlspecialchars($patient['gender']) . '</td>
+                                                <td>' . htmlspecialchars($patient['created_at']) . '</td>
+                                                <td>' . htmlspecialchars($patient['user_id']) . '</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>';
+                        }
+                    }
+                    ?>
                 </div>
             </div>
         </div>
