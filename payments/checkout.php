@@ -4,8 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-include('../includes/pageHeader.php');
-include('../config/config.php');
+include('../users/config.php');
 
 session_start();
 
@@ -18,7 +17,7 @@ $stripe_secret_key = "sk_test_51PTzKORscaWhBZMnxpovQVq0LyA0K0LnVcNSFVWp2jKztOpiu
 // Stripe namespace
 \Stripe\Stripe::setApiKey($stripe_secret_key);
 
-if (isset($_POST['price']) && isset($_POST['description'])) {
+if (isset($_POST['price'])) {
     $price = htmlspecialchars($_POST['price']) ;
     $description = htmlspecialchars($_POST['description']);
     $recipient_email = htmlspecialchars($_POST['remail']);
@@ -33,8 +32,8 @@ if (isset($_POST['price']) && isset($_POST['description'])) {
 
     // Create Checkout session
     try {
-        $stmt = $conn->prepare("INSERT INTO `billing` (`user_id`, `patient_id`, `billing_date`, `billing_type`,'amount') VALUES (?, ?, ?, ?,?)");
-        $stmt->bind_param("sidsi", $user_id, $patient_id, $billing_date, $billing_type,$amount);
+        $stmt = $conn->prepare("INSERT INTO `billing` (`user_id`, `patient_id`, `billing_date`, `billing_type`,'amount') VALUES (?, ?, ?, ?.)");
+        $stmt->bind_param("siss", $sender_email, $dbprice, $recipient_email, $created_at);
         if ($stmt->execute()) {
             $checkout_session = \Stripe\Checkout\Session::create([
                 "mode" => "payment",

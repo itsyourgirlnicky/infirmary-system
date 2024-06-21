@@ -1,22 +1,16 @@
 <?php
 session_start();
-include('config.php'); 
+include('config.php');
 
 // Fetch existing billing records
 $query = "SELECT * FROM billing ORDER BY billing_date DESC";
 $result = $mysqli->query($query);
 
-// Initialize variables for modal form
-$user_id = '';
-$patient_id = '';
-$billing_date = date('Y-m-d'); // Default to current date
-$billing_type = '';
-$amount = '';
-
 // Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate and sanitize input data
-    $user_id = htmlspecialchars($_POST['user_id']);
+    // $user_id = htmlspecialchars($_POST['user_id']);
+    $user_id = $_SESSION['user_id'];
     $patient_id = htmlspecialchars($_POST['patient_id']);
     $billing_date = htmlspecialchars($_POST['billing_date']);
     $billing_type = htmlspecialchars($_POST['billing_type']);
@@ -25,19 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insert into database
     $insert_query = "INSERT INTO billing (user_id, patient_id, billing_date, billing_type, amount) VALUES (?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($insert_query);
-    $stmt->bind_param('siisd', $user_id, $patient_id, $billing_date, $billing_type, $amount);
+    $stmt->bind_param('sissi', $user_id, $patient_id, $billing_date, $billing_type, $amount);
 
     if ($stmt->execute()) {
         // Success message
         $success_message = "Billing record added successfully.";
         // Clear form fields after successful submission
-        $user_id = '';
-        $patient_id = '';
-        $billing_date = date('Y-m-d');
-        $billing_type = '';
-        $amount = '';
-        // Refresh page to update billing records
-        header("Refresh:0");
     } else {
         // Error message
         $error_message = "Failed to add billing record. Please try again.";
@@ -49,22 +36,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Billing Dashboard</title>
-    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="styles.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-<header style="background-color: #800000; color: #ffc300; padding: 10px;">
-    <div class="container text-center" style="text-align: center;">
-        <h1 style="font-size: 24px;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
-    </div>
-</header>
+    <header style="background-color: #800000; color: #ffc300; padding: 10px;">
+        <div class="container text-center" style="text-align: center;">
+            <h1 style="font-size: 24px;">CATHOLIC UNIVERSITY OF EASTERN AFRICA</h1>
+        </div>
+    </header>
     <div class="container mt-4">
         <h2 class="mb-4">Billing Dashboard</h2>
-        
+
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addBillingModal">
             Add Billing
@@ -80,14 +69,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                    <form action="../payments/checkout.php">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    <!-- <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                         <div class="modal-body">
-                            <?php if (isset($error_message)): ?>
+                            <?php if (isset($error_message)) : ?>
                                 <div class="alert alert-danger" role="alert">
                                     <?php echo $error_message; ?>
                                 </div>
                             <?php endif; ?>
-                            <?php if (isset($success_message)): ?>
+                            <?php if (isset($success_message)) : ?>
                                 <div class="alert alert-success" role="alert">
                                     <?php echo $success_message; ?>
                                 </div>
@@ -113,11 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="<?php echo $amount; ?>" required>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <!-- <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div> -->
+
+                    </form> -->
                 </div>
             </div>
         </div>
@@ -140,14 +133,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $cnt = 1;
                     while ($row = $result->fetch_assoc()) {
                     ?>
-                    <tr>
-                        <td><?php echo $cnt; ?></td>
-                        <td><?php echo htmlspecialchars($row['user_id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['patient_id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['billing_date']); ?></td>
-                        <td><?php echo htmlspecialchars($row['billing_type']); ?></td>
-                        <td><?php echo htmlspecialchars($row['amount']); ?></td>
-                    </tr>
+                        <tr>
+                            <td><?php echo $cnt; ?></td>
+                            <td><?php echo htmlspecialchars($row['user_id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['patient_id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['billing_date']); ?></td>
+                            <td><?php echo htmlspecialchars($row['billing_type']); ?></td>
+                            <td><?php echo htmlspecialchars($row['amount']); ?></td>
+                        </tr>
                     <?php
                         $cnt++;
                     }
@@ -162,12 +155,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <footer style="background-color: #800000; color: #ffc300; padding: 10px;">
-  <div style="text-align: center;">
-      <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
-  </div>
-</footer>
+        <div style="text-align: center;">
+            <p style="font-size: 14px;">&copy; 2024 Catholic University of Eastern Africa</p>
+        </div>
+    </footer>
 
 
-<script src=".\validation.js"></script>
+    <script src=".\validation.js"></script>
 </body>
+
 </html>
