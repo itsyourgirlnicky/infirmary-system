@@ -5,6 +5,7 @@ include('config.php');
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,23 +17,26 @@ include('config.php');
             background-color: #800000;
             padding: 10px;
         }
+
         .navbar h1 {
             margin: 0;
             font-size: 24px;
             color: #ffc300;
         }
-        
+
         .footer {
             background-color: #800000;
             color: #ffc300;
             padding: 10px;
             text-align: center;
         }
+
         .table td {
             vertical-align: middle;
         }
     </style>
 </head>
+
 <body>
     <header class="navbar">
         <div class="container text-center">
@@ -75,29 +79,30 @@ include('config.php');
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php
-                                    $ret = "SELECT c.*, p.name FROM consultations c INNER JOIN patients p ON c.patient_id = p.patient_id ORDER BY c.visit_date ASC";
-                                    $stmt = $mysqli->prepare($ret);
-                                    $stmt->execute();
-                                    $res = $stmt->get_result();
-                                    $cnt = 1;
-                                    while ($row = $res->fetch_object()) {
-                                      
-                         $labreport_url = "viewlabreports.php?patient_id=" . htmlspecialchars($row->patient_id);
-                       $notes_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
-                        $prescription_url = "viewprescription.php?patient_id=" . htmlspecialchars($row->patient_id);
-?>
+                                        <?php
+                                        $ret = "SELECT c.*, p.name FROM consultations c INNER JOIN patients p ON c.patient_id = p.patient_id ORDER BY c.visit_date ASC";
+                                        $stmt = $mysqli->prepare($ret);
+                                        $stmt->execute();
+                                        $res = $stmt->get_result();
+                                        $cnt = 1;
+                                        while ($row = $res->fetch_object()) {
 
-                                        <tr>
+                                            $labreport_url = "viewlabreport.php?patient_id=" . htmlspecialchars($row->patient_id);
+                                            $notes_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
+                                            $prescription_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
+                                        ?>
+
+                                            <tr>
                                             <td><?php echo $cnt; ?></td>
-                                            <td><?php echo htmlspecialchars($row->name); ?></td>
-                                            <td><?php echo htmlspecialchars($row->patient_id); ?></td>
-                                            <td><?php echo htmlspecialchars($row->visit_date); ?></td>
-                                            <td><a href="<?php echo $labreport_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                            <td><a href="<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                            <td><a href="<?php echo $prescription_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                        </tr>
-                                    <?php $cnt++; } ?>
+                                                <td><?php echo htmlspecialchars($row->name); ?></td>
+                                                <td><?php echo htmlspecialchars($row->patient_id); ?></td>
+                                                <td><?php echo htmlspecialchars($row->visit_date); ?></td>
+                                                <td><a href="<?php echo $labreport_url; ?>" class="btn btn-primary btn-sm">View</a></td>
+                                                <td><a href="<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View</a></td>
+                                                <td><a href="<?php echo $prescription_url; ?>" class="btn btn-primary btn-sm">View</a></td>
+                                            </tr>
+                                        <?php $cnt++;
+                                        } ?>
                                     </tbody>
                                     <tfoot>
                                         <tr class="active">
@@ -124,4 +129,5 @@ include('config.php');
         </footer>
     </div>
 </body>
+
 </html>

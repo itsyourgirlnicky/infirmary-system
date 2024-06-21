@@ -1,0 +1,79 @@
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+}
+
+/* Header styles */
+header {
+    background-color: #800000; /* Dark red */
+    color: #ffc300; /* Yellow */
+    padding: 10px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+/* Footer styles */
+footer {
+    background-color: #800000; /* Dark red */
+    color: #ffc300; /* Yellow */
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 0;
+}
+
+.modal-header {
+    background-color: #343a40; /* Dark gray */
+    color: #ffffff; /* White */
+    border-bottom: 1px solid #dee2e6; /* Light gray */
+}
+
+.modal-title {
+    color: #ffffff; /* White */
+}
+
+.modal-body {
+    padding: 15px;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6; /* Light gray */
+    padding: 15px;
+}
+
+/* Table styles */
+.table {
+    margin-top: 20px;
+    background-color: #ffffff; /* White */
+}
+
+.table th,
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #007bff; /* Blue */
+    color: #ffffff; /* White */
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6; /* Light gray */
+    padding: 8px;
+}

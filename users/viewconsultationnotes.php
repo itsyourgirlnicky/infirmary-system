@@ -1,7 +1,6 @@
 <?php
 session_start();
-include('config.php'); // Include your database connection or configuration file
-
+include('config.php'); 
 // Define initial query to fetch all consultations
 $query = "SELECT consultation_id, patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan, created_at FROM consultations ORDER BY consultation_id DESC";
 
@@ -53,8 +52,8 @@ if ($result->num_rows > 0) {
             <div class="content">
                 <div class="page-title-box">
                     <div class="breadcrumb">
-                        <div class="breadcrumb-item"><a href="admindashboard.php">Dashboard</a></div>
-                        <div class="breadcrumb-item"><a href="registrationrecords.php">Registration Records</a></div>
+                        <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
+                        <div class="breadcrumb-item"><a href="consultationrecords.php">Registration Records</a></div>
                         <div class="breadcrumb-item active">Consultation Records</div>
                     </div>
                 </div>

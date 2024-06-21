@@ -32,7 +32,7 @@ $result = $mysqli->query($query);
                 <div class="page-title-box">
                     <div class="breadcrumb">
                         <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
-                        <div class="breadcrumb-item"><a href="manageconsultation.php">Manage Consultation</a></div>
+                        <div class="breadcrumb-item"><a href="consultationrecords.php">Consultation Records</a></div>
                         <div class="breadcrumb-item active">Lab Reports</div>
                     </div>
                 </div>
