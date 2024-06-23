@@ -2,23 +2,7 @@
 session_start();
 include('config.php');
 
-// Handle Delete action if needed
-if (isset($_GET['consultation_id'])) {
-    $consultation_id = intval($_GET['consultation_id']);
-    $query = "DELETE FROM consultations WHERE consultation_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $consultation_id);
-    if ($stmt->execute()) {
-        // Deletion successful, redirect to refresh the page
-        header("Location: consultationreports.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete consultation. Please try again.";
-    }
-    $stmt->close();
-}
-
-// Define initial query to fetch all consultations
+// fetch all consultations
 $query = "SELECT consultation_id, patient_id, user_id, visit_date, created_at, consultation_type, notes, diagnosis, treatment_plan FROM consultations";
 
 // Initialize filter variables
@@ -38,12 +22,12 @@ if (isset($_GET['filter'])) {
     if (!empty($filterUserId)) {
         $whereClause[] = "user_id = ?";
         $params[] = $filterUserId;
-        $paramTypes .= 's'; // user_id is assumed to be a string
+        $paramTypes .= 's'; 
     }
     if (!empty($filterConsultationType)) {
         $whereClause[] = "consultation_type = ?";
         $params[] = $filterConsultationType;
-        $paramTypes .= 's'; // consultation_type is assumed to be a string
+        $paramTypes .= 's'; 
     }
 
     // Combine WHERE clauses if filters are applied
@@ -54,7 +38,7 @@ if (isset($_GET['filter'])) {
     // Prepare statement and execute filtered query
     $stmt = $mysqli->prepare($query);
     if ($stmt) {
-        // Bind parameters if there are any
+        // Bind parameters
         if (!empty($params)) {
             $stmt->bind_param($paramTypes, ...$params);
         }
@@ -66,14 +50,6 @@ if (isset($_GET['filter'])) {
 } else {
     // Execute the initial query without filters
     $result = $mysqli->query($query);
-}
-
-// Display error message if deletion or filter fails
-if (isset($err_delete)) {
-    echo "<p class='text-danger'>$err_delete</p>";
-}
-if (isset($err_filter)) {
-    echo "<p class='text-danger'>$err_filter</p>";
 }
 
 // Initialize arrays to store consultations grouped by user_id and created_at date
@@ -132,7 +108,6 @@ while ($row = $result->fetch_assoc()) {
                                 <option value="General" <?php if ($filterConsultationType === 'General') echo 'selected'; ?>>General</option>
                                 <option value="VCT" <?php if ($filterConsultationType === 'VCT') echo 'selected'; ?>>VCT</option>
                                 <option value="Dental" <?php if ($filterConsultationType === 'Dental') echo 'selected'; ?>>Dental</option>
-                                <!-- Add more options as needed -->
                             </select>
                         </div>
                         <button type="submit" name="filter" value="true" class="btn btn-primary">Filter</button>
@@ -156,7 +131,6 @@ while ($row = $result->fetch_assoc()) {
                                             <th>Notes</th>
                                             <th>Diagnosis</th>
                                             <th>Treatment Plan</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -171,7 +145,6 @@ while ($row = $result->fetch_assoc()) {
                                                 <td><?php echo htmlspecialchars($consultation['notes']); ?></td>
                                                 <td><?php echo htmlspecialchars($consultation['diagnosis']); ?></td>
                                                 <td><?php echo htmlspecialchars($consultation['treatment_plan']); ?></td>
-                                                <td><a href="?consultation_id=<?php echo $consultation['consultation_id']; ?>" class="btn btn-danger btn-sm">Delete</a></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
