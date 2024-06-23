@@ -68,7 +68,7 @@ while ($row = $result->fetch_assoc()) {
 
                     <!-- Display Filtered Patients -->
                     <?php
-                    $filteredPatients = $patientsByGender; // Start with all patients by gender
+                    $filteredPatients = $patientsByGender; //patients by gender
 
                     // Apply filters if set
                     if (isset($_GET['gender']) && !empty($_GET['gender'])) {

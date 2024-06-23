@@ -2,7 +2,7 @@
 session_start();
 include('config.php');
 
-// Fetch user records with optional filters
+// Fetch user records with filters
 $roleFilter = '';
 $dateFilter = '';
 

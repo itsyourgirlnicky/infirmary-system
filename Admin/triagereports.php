@@ -2,36 +2,9 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');  // Handle admin login
-    exit();
-}
-
-// Handle Delete action
-if (isset($_GET['vital_id'])) {
-    $vital_id = intval($_GET['vital_id']);
-    $query = "DELETE FROM vitals WHERE vital_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $vital_id);
-    if ($stmt->execute()) {
-        // Deletion successful, redirect to refresh the page
-        header("Location: triagerecords.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete triage record. Please try again.";
-    }
-    $stmt->close();
-}
-
 // Fetch triage records from the database
 $query = "SELECT vital_id, patient_id, user_id, visit_date, temperature, blood_pressure, weight, height, created_at, status FROM vitals ORDER BY created_at DESC";
 $result = $mysqli->query($query);
-
-// Display error message if deletion fails
-if (isset($err_delete)) {
-    echo "<p class='text-danger'>$err_delete</p>";
-}
 
 // Classify records by status
 $pendingRecords = [];
@@ -116,7 +89,6 @@ if (isset($_GET['status'])) {
                                         <th>Height</th>
                                         <th>Created At</th>
                                         <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -156,7 +128,6 @@ if (isset($_GET['status'])) {
                                         <th>Height</th>
                                         <th>Created At</th>
                                         <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -172,7 +143,6 @@ if (isset($_GET['status'])) {
                                             <td><?php echo htmlspecialchars($record['height']); ?></td>
                                             <td><?php echo htmlspecialchars($record['created_at']); ?></td>
                                             <td><?php echo htmlspecialchars($record['status']); ?></td>
-                                            <td><a href="?vital_id=<?php echo $record['vital_id']; ?>" class="btn btn-danger btn-sm">Delete</a></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
