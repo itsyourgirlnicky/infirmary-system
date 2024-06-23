@@ -8,3 +8,12 @@ With the lack of patient medical history, it gets difficult to give a continued 
 - Maintain patient medical history.
 - Accounting for finances 
 
+# Features
+- Patient Registration
+- Triage 
+- Consultation
+- Labratory 
+- Pharmacy 
+- Billing 
+- Administration Dashboard
+- System Reports for the specifics 
