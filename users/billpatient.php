@@ -69,10 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="../payments/checkout.php">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                    <!-- <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
                         <div class="modal-body">
                             <?php if (isset($error_message)) : ?>
                                 <div class="alert alert-danger" role="alert">
@@ -105,12 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="<?php echo $amount; ?>" required>
                             </div>
                         </div>
-                        <!-- <div class="modal-footer">
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                        </div> -->
+                        </div>
 
-                    </form> -->
+                    </form>
                 </div>
             </div>
         </div>

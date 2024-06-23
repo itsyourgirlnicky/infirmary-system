@@ -37,8 +37,8 @@ if (isset($_POST['price'])) {
         if ($stmt->execute()) {
             $checkout_session = \Stripe\Checkout\Session::create([
                 "mode" => "payment",
-                "success_url" => "http://localhost/quicksend2/senders/success.php",
-                "cancel_url" => "http://localhost/quicksend2/senders/cancel.php", // Optional but recommended
+                "success_url" => "http://localhost/infirmary/payments/success.php",
+                "cancel_url" => "http://localhost/infirmary/payments/fail.php", 
                 "line_items" => [
                     [
                         "quantity" => 1,
