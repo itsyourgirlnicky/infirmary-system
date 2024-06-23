@@ -41,9 +41,9 @@ form {
   flex-direction: column;
   justify-content: center;
 }
-#loginForm {
+/* #loginForm {
   width: 30%;
-}
+} */
 form input {
   height: 2.5rem;
   border-radius: 10px;

@@ -2,7 +2,7 @@
 session_start();
 include('config.php');
 
-// Fetch statistics from the database
+// Fetch from the database
 $query_total = "SELECT COUNT(*) as total FROM labrequests";
 $result_total = $mysqli->query($query_total);
 $total_requests = $result_total->fetch_assoc()['total'];

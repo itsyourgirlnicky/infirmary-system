@@ -2,12 +2,6 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
 // Handle Delete action
 if (isset($_GET['vital_id']) && isset($_GET['action']) && $_GET['action'] == 'delete') {
     $vital_id = intval($_GET['vital_id']);

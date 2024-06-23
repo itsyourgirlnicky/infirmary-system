@@ -2,12 +2,6 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-
 // Fetch user data
 $user_id = $_SESSION['user_id'];
 $sql = "SELECT username, email, role, name, created_at FROM users WHERE user_id = ?";

@@ -2,12 +2,6 @@
 session_start();
 include('config.php');
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');  //handle admin login this is not correct
-    exit();
-}
-
 // Handle Delete action
 if (isset($_GET['patient_id'])) {
     $patient_id = intval($_GET['patient_id']);
