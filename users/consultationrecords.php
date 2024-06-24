@@ -80,7 +80,11 @@ include('config.php');
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $ret = "SELECT c.*, p.name FROM consultations c INNER JOIN patients p ON c.patient_id = p.patient_id ORDER BY c.visit_date ASC";
+                                        $patient_id = $_GET['patient_id'];
+                                        $ret = "SELECT c.*, p.name FROM consultations c 
+                                        INNER JOIN patients p ON c.patient_id = p.patient_id 
+                                        WHERE c.patient_id = $patient_id 
+                                        ORDER BY c.visit_date ASC";
                                         $stmt = $mysqli->prepare($ret);
                                         $stmt->execute();
                                         $res = $stmt->get_result();
@@ -93,7 +97,7 @@ include('config.php');
                                         ?>
 
                                             <tr>
-                                            <td><?php echo $cnt; ?></td>
+                                                <td><?php echo $cnt; ?></td>
                                                 <td><?php echo htmlspecialchars($row->name); ?></td>
                                                 <td><?php echo htmlspecialchars($row->patient_id); ?></td>
                                                 <td><?php echo htmlspecialchars($row->visit_date); ?></td>
