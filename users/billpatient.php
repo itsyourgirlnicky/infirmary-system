@@ -3,7 +3,7 @@ session_start();
 include('config.php');
 
 // Fetch existing billing records
-$query = "SELECT * FROM billing ORDER BY billing_date DESC";
+$query = "SELECT * FROM billing ORDER BY created_at DESC";
 $result = $mysqli->query($query);
 
 // Check if form is submitted
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                    <form method="POST" action="../payments/checkout.php">
                         <div class="modal-body">
                             <?php if (isset($error_message)) : ?>
                                 <div class="alert alert-danger" role="alert">
@@ -83,23 +83,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <?php endif; ?>
                             <div class="form-group">
                                 <label for="patient_id">Patient ID:</label>
-                                <input type="text" class="form-control" id="patient_id" name="patient_id" value="<?php echo $patient_id; ?>" required>
+                                <input type="text" class="form-control" id="patient_id" name="patient_id" required>
                             </div>
                             <div class="form-group">
                                 <label for="billing_date">Billing Date:</label>
-                                <input type="date" class="form-control" id="billing_date" name="billing_date" value="<?php echo $billing_date; ?>" required>
+                                <input type="date" class="form-control" id="created_at" name="created_at" required>
                             </div>
                             <div class="form-group">
                                 <label for="billing_type">Billing Type:</label>
                                 <select class="form-control" id="billing_type" name="billing_type" required>
-                                    <option value="">Select Billing Type</option>
-                                    <option value="Dental" <?php if ($billing_type === 'Dental') echo 'selected'; ?>>Dental</option>
-                                    <option value="Medication" <?php if ($billing_type === 'Medication') echo 'selected'; ?>>Medication</option>
+                                    <option hidden value="">Select Billing Type</option>
+                                    <option value="Dental">Dental</option>
+                                    <option value="Medication">Medication</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="amount">Amount:</label>
-                                <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="<?php echo $amount; ?>" required>
+                                <input type="number" class="form-control" id="amount" name="amount" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <th>#</th>
                         <th>User ID</th>
                         <th>Patient ID</th>
-                        <th>Billing Date</th>
+                        <th>Created At</th>
                         <th>Billing Type</th>
                         <th>Amount</th>
                     </tr>
@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td><?php echo $cnt; ?></td>
                             <td><?php echo htmlspecialchars($row['user_id']); ?></td>
                             <td><?php echo htmlspecialchars($row['patient_id']); ?></td>
-                            <td><?php echo htmlspecialchars($row['billing_date']); ?></td>
+                            <td><?php echo htmlspecialchars($row['created_at']); ?></td>
                             <td><?php echo htmlspecialchars($row['billing_type']); ?></td>
                             <td><?php echo htmlspecialchars($row['amount']); ?></td>
                         </tr>
