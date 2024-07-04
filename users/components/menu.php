@@ -45,9 +45,9 @@
                   <li>
                     <a href="manageconsultation.php"><i class="ion-ios-lightbulb-outline"></i>Manage Consultation</a>
                   </li>
-                  <li>
+                  <!-- <li>
                     <a href="consultationrecords.php"><i class="ion-ios-lightbulb-outline"></i>Consultation Records</a>
-                  </li>
+                  </li> -->
                 </ul>
               </li>
               <li>
@@ -73,15 +73,15 @@
                 </ul>
               </li>
               <li>
-                <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
-                <ul class="nav-flyout">
+                <a href="billpatient.php"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
+                <!-- <ul class="nav-flyout">
                   <li>
                     <a href="billpatient.php"><i class="ion-ios-filing-outline"></i>Bill Patient</a>
                   </li>
                   <li>
                     <a href="managebilling.php"><i class="ion-ios-information-outline"></i>Manage Billing</a>
-                  </li>
-                </ul>
+                  </li> -->
+                <!-- </ul> -->
               </li>
             </ul>
           </nav>

@@ -11,29 +11,20 @@ if (isset($_POST['admin_login'])) {
         $err = "All fields are required.";
     } else {
         // SQL to validate user credentials and check role
-        $stmt = $mysqli->prepare("SELECT user_id FROM users WHERE username=? AND password=? AND role = ?");
-        if ($stmt === false) {
-            $err = "Failed to prepare the SQL statement.";
+        $stmt = $mysqli->prepare("SELECT user_id FROM users WHERE username=? AND password=?");
+        $stmt->bind_param('ss', $username, $password);
+        $stmt->execute();
+        $stmt->bind_result($user_id);
+        $rs = $stmt->fetch();
+
+        if ($rs) {
+            $_SESSION['user_id'] = $user_id;
+            header('location:admindashboard.php');
+            exit();
         } else {
-            $stmt->bind_param('sss', $username, $password,$role);
-            $stmt->execute();
-            $stmt->bind_result($user_id);
-            $rs = $stmt->fetch();
-
-            if ($rs) {
-                if ($role === 'admin') {
-                    $_SESSION['user_id'] = $user_id;
-                    $_SESSION['role'] = $role;
-
-                    header("location:admindashboard.php");
-                } else {
-                    $err = "You do not have the required permissions to access this page.";
-                }
-            } else {
-                $err = "Invalid username or password.";
-            }
-            $stmt->close();
+            $err = 'Invalid email or password';
         }
+        $stmt->close();
     }
 }
 ?>
@@ -60,18 +51,15 @@ if (isset($_POST['admin_login'])) {
 
     <!-- Login form content -->
     <div class="login_form_wrapper">
-        <form id="loginForm" method="post" onsubmit="return loginValidation()">
-            <?php 
+        <form id="admin_loginForm" method="post" onsubmit="return loginValidation()">
+            <?php
             if (isset($err)) {
                 echo "<div style='color: red;'>$err</div>";
-            } 
+            }
             ?>
             <label for="username">Username</label><br>
-            <input required type="text" id="username" name="username" value="<?php echo isset($username) ? htmlspecialchars($username) : ''; ?>"><br>
-            <label for="role">Role</label>
-            <select required name="role" id="role">
-            <option value="admin">Admin</option>
-            <label for="password">Password</label><br>
+            <input required type="text" id="username" name="username"><br>
+            <label for="password"></label><br>
             <input required type="password" id="password" name="password"><br>
             <button type="submit" name="admin_login">Login</button>
         </form>

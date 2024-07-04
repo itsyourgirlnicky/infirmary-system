@@ -1,24 +1,45 @@
 <?php
 session_start();
-include('config.php'); 
-// Define initial query to fetch all consultations
-$query = "SELECT consultation_id, patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan, created_at FROM consultations ORDER BY consultation_id DESC";
+include('config.php');
 
-// Execute query
-$result = $mysqli->query($query);
+// Check if patient_id is set in the URL
+if (isset($_GET['patient_id'])) {
+    $patient_id = $_GET['patient_id'];
 
-// Check if there are any consultations
-if ($result->num_rows > 0) {
-    // Initialize an array to store consultation data
-    $consultations = [];
+    // Define query to fetch consultations for the specific patient
+    $query = "SELECT consultation_id, patient_id, user_id, visit_date, consultation_type, notes, diagnosis, treatment_plan, created_at 
+              FROM consultations 
+              WHERE patient_id = ? 
+              ORDER BY consultation_id DESC";
 
-    // Fetch data and store in the consultations array
-    while ($row = $result->fetch_assoc()) {
-        $consultations[] = $row;
+    // Prepare and execute query
+    if ($stmt = $mysqli->prepare($query)) {
+        $stmt->bind_param("i", $patient_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Check if there are any consultations
+        if ($result->num_rows > 0) {
+            // Initialize an array to store consultation data
+            $consultations = [];
+
+            // Fetch data and store in the consultations array
+            while ($row = $result->fetch_assoc()) {
+                $consultations[] = $row;
+            }
+        } else {
+            $error_message = "No consultations found for this patient.";
+        }
+
+        $stmt->close();
+    } else {
+        $error_message = "Failed to prepare the SQL query.";
     }
 } else {
-    $error_message = "No consultations found.";
+    $error_message = "No patient ID provided.";
 }
+
+$mysqli->close();
 ?>
 
 <!DOCTYPE html>

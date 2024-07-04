@@ -2,24 +2,8 @@
 session_start();
 include('config.php');
 
-// Handle Delete action
-if (isset($_GET['lab_request_id']) && isset($_GET['action']) && $_GET['action'] == 'delete') {
-    $lab_request_id = intval($_GET['lab_request_id']);
-    $query = "DELETE FROM labrequests WHERE lab_request_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $lab_request_id);
-    if ($stmt->execute()) {
-        header("Location: admin_dashboard.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete lab request. Please try again.";
-    }
-    $stmt->close();
-}
-
 // Handle Add action
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_lab_request'])) {
-    $consultation_id = $_POST['consultation_id'];
     $patient_id = $_POST['patient_id'];
     $user_id = $_SESSION['user_id'];
     $test_name = $_POST['test_name'];
@@ -27,16 +11,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_lab_request'])) {
     $result = $_POST['result'];
     $status = $_POST['status'];
 
-    $query = "INSERT INTO labrequests (consultation_id, patient_id, user_id, test_name, created_at, result, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('iiissss', $consultation_id, $patient_id, $user_id, $test_name, $created_at, $result, $status);
-    if ($stmt->execute()) {
-        header("Location: admin_dashboard.php");
-        exit();
-    } else {
-        $err_add = "Failed to add lab request. Please try again.";
-    }
+    // Fetch the latest consultation_id for the given patient_id
+    $consultation_query = "SELECT consultation_id FROM consultations WHERE patient_id = ? ORDER BY visit_date DESC LIMIT 1";
+    $stmt = $mysqli->prepare($consultation_query);
+    $stmt->bind_param('i', $patient_id);
+    $stmt->execute();
+    $stmt->bind_result($consultation_id);
+    $stmt->fetch();
     $stmt->close();
+
+    if ($consultation_id) {
+        $query = "INSERT INTO labrequests (consultation_id, patient_id, user_id, test_name, created_at, result, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $mysqli->prepare($query);
+        $stmt->bind_param('iisssss', $consultation_id, $patient_id, $user_id, $test_name, $created_at, $result, $status);
+        if ($stmt->execute()) {
+            header("Location: managelabrequest.php");
+            exit();
+        } else {
+            $err_add = "Failed to add lab request. Please try again.";
+        }
+        $stmt->close();
+    } else {
+        $err_add = "No consultation found for the given patient ID.";
+    }
 }
 
 // Fetch lab requests from the database
@@ -187,7 +184,7 @@ $result = $mysqli->query($query);
     <div class="modal fade" id="addLabRequestModal" tabindex="-1" role="dialog" aria-labelledby="addLabRequestModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="admin_dashboard.php" method="POST">
+                <form action="managelabrequest.php" method="POST">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addLabRequestModalLabel">Add New Lab Request</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -195,10 +192,6 @@ $result = $mysqli->query($query);
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="consultation_id">Consultation ID</label>
-                            <input type="number" class="form-control" id="consultation_id" name="consultation_id" required>
-                        </div>
                         <div class="form-group">
                             <label for="patient_id">Patient ID</label>
                             <input type="number" class="form-control" id="patient_id" name="patient_id" required>
@@ -233,6 +226,7 @@ $result = $mysqli->query($query);
             <p>&copy; 2024 Catholic University of Eastern Africa</p>
         </div>
     </footer>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

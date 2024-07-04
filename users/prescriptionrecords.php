@@ -2,21 +2,6 @@
 session_start();
 include('config.php');
 
-// Handle Delete action
-if (isset($_GET['prescription_id']) && isset($_GET['action']) && $_GET['action'] == 'delete') {
-    $prescription_id = intval($_GET['prescription_id']);
-    $query = "DELETE FROM prescriptions WHERE prescription_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $prescription_id);
-    if ($stmt->execute()) {
-        header("Location: admin_dashboard_prescriptions.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete prescription. Please try again.";
-    }
-    $stmt->close();
-}
-
 // Handle Add action
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_prescription'])) {
     $consultation_id = $_POST['consultation_id'];
@@ -29,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_prescription'])) {
 
     $query = "INSERT INTO prescriptions (consultation_id, patient_id, user_id, medication, dosage, duration, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('iiissss', $consultation_id, $patient_id, $user_id, $medication, $dosage, $duration, $created_at);
+    $stmt->bind_param('iisssss', $consultation_id, $patient_id, $user_id, $medication, $dosage, $duration, $created_at);
     if ($stmt->execute()) {
-        header("Location: admin_dashboard_prescriptions.php");
+        header("Location: prescriptionrecords.php");
         exit();
     } else {
         $err_add = "Failed to add prescription. Please try again.";
@@ -52,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_prescription'])) 
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param('iisssi', $consultation_id, $patient_id, $medication, $dosage, $duration, $prescription_id);
     if ($stmt->execute()) {
-        header("Location: admin_dashboard_prescriptions.php");
+        header("Location: prescriptionrecords.php");
         exit();
     } else {
         $err_update = "Failed to update prescription. Please try again.";
@@ -139,7 +124,7 @@ $result = $mysqli->query($query);
 <div class="modal fade" id="addPrescriptionModal" tabindex="-1" role="dialog" aria-labelledby="addPrescriptionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="admin_dashboard_prescriptions.php" method="POST">
+            <form action="prescriptionrecords.php" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addPrescriptionModalLabel">Add New Prescription</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -177,7 +162,7 @@ $result = $mysqli->query($query);
 <div class="modal fade" id="editPrescriptionModal" tabindex="-1" role="dialog" aria-labelledby="editPrescriptionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="admin_dashboard_prescriptions.php" method="POST">
+            <form action="prescriptionrecords.php" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editPrescriptionModalLabel">Edit Prescription</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

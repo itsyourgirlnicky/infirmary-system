@@ -49,7 +49,6 @@ include('config.php');
                             <div class="mb-2">
                                 <div class="row">
                                     <div class="col-12 text-sm-center form-inline">
-                                        <!-- Optional search or filter -->
                                     </div>
                                 </div>
                             </div>

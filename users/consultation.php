@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_consultation'])) {
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param('issssss', $patient_id, $user_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan);
     if ($stmt->execute()) {
-        header("Location: consultations.php");
+        header("Location: consultation.php");
         exit();
     } else {
         $err_add = "Failed to add consultation record. Please try again.";
@@ -40,26 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_consultation'])) 
     $stmt = $mysqli->prepare($query);
     $stmt->bind_param('isssssi', $patient_id, $visit_date, $consultation_type, $notes, $diagnosis, $treatment_plan, $consultation_id);
     if ($stmt->execute()) {
-        header("Location: consultations.php");
+        header("Location: consultation.php");
         exit();
     } else {
         $err_edit = "Failed to update consultation record. Please try again.";
-    }
-    $stmt->close();
-}
-
-// Handle Delete Consultation action
-if (isset($_GET['delete']) && isset($_GET['consultation_id'])) {
-    $consultation_id = $_GET['consultation_id'];
-
-    $query = "DELETE FROM consultations WHERE consultation_id = ?";
-    $stmt = $mysqli->prepare($query);
-    $stmt->bind_param('i', $consultation_id);
-    if ($stmt->execute()) {
-        header("Location: consultations.php");
-        exit();
-    } else {
-        $err_delete = "Failed to delete consultation record. Please try again.";
     }
     $stmt->close();
 }
@@ -137,7 +121,7 @@ if (isset($_GET['delete']) && isset($_GET['consultation_id'])) {
                                 <div class="modal fade" id="editConsultationModal<?php echo $row->consultation_id; ?>" tabindex="-1" role="dialog" aria-labelledby="editConsultationModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
-                                            <form action="consultations.php" method="POST">
+                                            <form action="consultation.php" method="POST">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="editConsultationModalLabel">Edit Consultation</h5>
                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -193,7 +177,7 @@ if (isset($_GET['delete']) && isset($_GET['consultation_id'])) {
             <div class="modal fade" id="addConsultationModal" tabindex="-1" role="dialog" aria-labelledby="addConsultationModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form action="consultations.php" method="POST">
+                        <form action="consultation.php" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addConsultationModalLabel">Add New Consultation</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -212,7 +196,11 @@ if (isset($_GET['delete']) && isset($_GET['consultation_id'])) {
                                 </div>
                                 <div class="form-group">
                                     <label for="consultation_type">Consultation Type</label>
-                                    <input type="text" class="form-control" id="consultation_type" name="consultation_type" required>
+                                    <select class="form-control" id="consultation_type" name="consultation_type" required>
+                                        <option value="General">General</option>
+                                        <option value="VCT">VCT</option>
+                                        <option value="Dental">Dental</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="notes">Notes</label>

@@ -52,6 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
     <div class="container mt-4">
+    <div class="breadcrumb">
+                    <div class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></div>
+                    <div class="breadcrumb-item active">Billing</div>
+                </div>
         <h2 class="mb-4">Billing Dashboard</h2>
 
         <!-- Button trigger modal -->

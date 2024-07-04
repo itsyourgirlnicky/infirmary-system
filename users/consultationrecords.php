@@ -5,13 +5,11 @@ include('config.php');
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultation Records</title>
-    <link rel="stylesheet" href="managepatients.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Patients List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .navbar {
             background-color: #800000;
@@ -36,7 +34,6 @@ include('config.php');
         }
     </style>
 </head>
-
 <body>
     <header class="navbar">
         <div class="container text-center">
@@ -53,8 +50,7 @@ include('config.php');
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
                                     <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="consultation.php">Consultation</a></li>
-                                    <li class="breadcrumb-item active">Consultation Records</li>
+                                    <li class="breadcrumb-item active">Patients List</li>
                                 </ol>
                             </div>
                         </div>
@@ -64,7 +60,7 @@ include('config.php');
                 <div class="row">
                     <div class="col-12">
                         <div class="card-box">
-                            <h4 class="header-title">Consultation Records</h4>
+                            <h4 class="header-title">Patients List</h4>
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead>
@@ -72,38 +68,35 @@ include('config.php');
                                             <th>#</th>
                                             <th>Patient Name</th>
                                             <th>Patient ID</th>
-                                            <th>Visit Date</th>
-                                            <th>Lab Reports</th>
-                                            <th>Consultation Notes</th>
-                                            <th>Prescriptions</th>
+                                            <th>Address</th>
+                                            <th>Created At</th>
+                                            <th>View Lab Reports</th>
+                                            <th>View Consultation Notes</th>
+                                            <th>View Prescriptions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $patient_id = $_GET['patient_id'];
-                                        $ret = "SELECT c.*, p.name FROM consultations c 
-                                        INNER JOIN patients p ON c.patient_id = p.patient_id 
-                                        WHERE c.patient_id = $patient_id 
-                                        ORDER BY c.visit_date ASC";
+                                        $ret = "SELECT patient_id, name, address, created_at FROM patients ORDER BY name ASC";
                                         $stmt = $mysqli->prepare($ret);
                                         $stmt->execute();
                                         $res = $stmt->get_result();
                                         $cnt = 1;
                                         while ($row = $res->fetch_object()) {
-
                                             $labreport_url = "viewlabreport.php?patient_id=" . htmlspecialchars($row->patient_id);
                                             $notes_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
-                                            $prescription_url = "viewconsultationnotes.php?patient_id=" . htmlspecialchars($row->patient_id);
+                                            $prescription_url = "viewprescription.php?patient_id=" . htmlspecialchars($row->patient_id);
                                         ?>
 
                                             <tr>
                                                 <td><?php echo $cnt; ?></td>
                                                 <td><?php echo htmlspecialchars($row->name); ?></td>
                                                 <td><?php echo htmlspecialchars($row->patient_id); ?></td>
-                                                <td><?php echo htmlspecialchars($row->visit_date); ?></td>
-                                                <td><a href="<?php echo $labreport_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                                <td><a href="<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View</a></td>
-                                                <td><a href="<?php echo $prescription_url; ?>" class="btn btn-primary btn-sm">View</a></td>
+                                                <td><?php echo htmlspecialchars($row->address); ?></td>
+                                                <td><?php echo htmlspecialchars($row->created_at); ?></td>
+                                                <td><a href="<?php echo $labreport_url; ?>" class="btn btn-primary btn-sm">View Lab Reports</a></td>
+                                                <td><a href="<?php echo $notes_url; ?>" class="btn btn-primary btn-sm">View Consultation Notes</a></td>
+                                                <td><a href="<?php echo $prescription_url; ?>" class="btn btn-primary btn-sm">View Prescriptions</a></td>
                                             </tr>
                                         <?php $cnt++;
                                         } ?>
@@ -133,5 +126,4 @@ include('config.php');
         </footer>
     </div>
 </body>
-
 </html>
