@@ -2,13 +2,6 @@
 session_start();
 include('config.php');
 
-
-// Check if user is logged in and has the 'Admin' role
-if (isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header('Location: adminLogin.php');
-    exit();
-}
-
 ?>
 
 <!DOCTYPE html>

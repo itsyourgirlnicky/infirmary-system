@@ -67,6 +67,10 @@ $result_recent = $mysqli->query($query_recent);
     </header>
 
     <div class="container mt-5">
+    <div class="breadcrumb">
+            <div class="breadcrumb-item"><a href="admindashboard.php">Dashboard</a></div>
+            <div class="breadcrumb-item active">Lab Report</div>
+        </div>
         <h2 class="text-center">Lab Reports Summary</h2>
 
         <div class="row mt-4">

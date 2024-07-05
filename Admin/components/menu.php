@@ -81,15 +81,15 @@
                 </ul>
               </li>
               <li>
-                <a href="#"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
-                <ul class="nav-flyout">
+                <a href="billingreports.php"><i class="ion-ios-paper-outline"></i> <span class="">Billing</span></a>
+                <!-- <ul class="nav-flyout">
                   <li>
                     <a href="#"><i class="ion-ios-filing-outline"></i>Billing Records</a>
                   </li>
                   <li>
                     <a href="#"><i class="ion-ios-information-outline"></i>Billing Reports</a>
                   </li>
-                </ul>
+                </ul> -->
               </li>
             </ul>
           </nav>
